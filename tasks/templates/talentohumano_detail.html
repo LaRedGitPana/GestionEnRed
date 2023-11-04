@@ -1,0 +1,650 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="main container card card-body">
+    <div class="row">
+        <div class="col">
+            <h2 class="text" style="color: #3A833A; text-align: center;">{{talentohumano.nombreCompleto}}</h2>
+
+            {% if form.non_field_errors %}
+                <div style="color: red; font-size: 18px;">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <br>
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                {% if user.usuario.userType == 'Auxiliar' %}
+
+                <div class="container">
+                    <div class="row">
+
+                        <h3 class="text-center" style="color: #BA0F15;">INFORMACIÓN PERSONAL</h3>
+
+                        <div class="col-md-4">
+                            <b>Activo:</b>
+                            <p>{{talentohumano.activo}}</p>
+                            <b>Fecha de Expedición del Documento:</b>
+                            <p>{{talentohumano.docExpeditionDate}}</p>
+                            <b>Sexo:</b>
+                            <p>{{talentohumano.sex}}</p>
+                            <b>Dirección:</b>
+                            <p>{{talentohumano.residenceAddress}}</p>
+                            <b>Telefono del Contacto:</b>
+                            <p>{{talentohumano.contactPhone}}</p>
+                            <b>Escolaridad:</b>
+                            <p>{{talentohumano.escolaridad}}</p>
+                            <b>Grupo Sanguineo:</b>
+                            <p>{{talentohumano.bloodGroup}}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <b>Tipo de Identificación:</b>
+                            <p>{{talentohumano.idType}}</p>
+                            <b>Lugar de Expedición del Documento:</b>
+                            <p>{{talentohumano.expeditionPlace}}</p>
+                            <b>Fecha de Nacimiento:</b>
+                            <p>{{talentohumano.birthday}}</p>
+                            <b>Municipio de Residencia:</b>
+                            <p>{{talentohumano.municipalitieResidence}}</p>
+                            <b>Correo Personal:</b>
+                            <p>{{talentohumano.personalEmail}}</p>
+                            <b>Profesión:</b>
+                            <p>{{talentohumano.profesion}}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <b>Documento:</b>
+                            <p>{{talentohumano.document}}</p>
+                            <b>Nombre Completo:</b>
+                            <p>{{talentohumano.nombreCompleto}}</p>
+                            <b>Lugar de Nacimiento:</b>
+                            <p>{{talentohumano.birthPlace}}</p>
+                            <b>Telefono:</b>
+                            <p>{{talentohumano.phone}}</p>
+                            <b>Correo Institucional:</b>
+                            <p>{{talentohumano.professionalEmail}}</p>
+                            <b>Estado Civil:</b>
+                            <p>{{talentohumano.estadoCivil}}</p>
+                        </div>
+
+                        <h3 class="text-center" style="color: #BA0F15;">INFORMACIÓN SEGURIDAD</h3>
+
+                        <div class="col-md-4">
+                            <b>EPS</b>
+                            <p>{{talentohumano.eps}}</p>
+                            <b>AFS</b>
+                            <p>{{talentohumano.afs}}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <b>Codigo del Centro de Trabajo:</b>
+                            <p>{{talentohumano.codigoCentroTrabajo}}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <b>Codigo de la Actividad a Desarrollar:</b>
+                            <p>{{talentohumano.codigoActividadDesarrollar}}</p>
+                        </div>
+
+                        <h3 class="text-center" style="color: #BA0F15;">INFORMACIÓN CONTRACTUAL</h3>
+
+                        <div class="col-md-4">
+                            <b>Tipo de Contrato:</b>
+                            <p>{{talentohumano.contractType}}</p>
+                            <b>Fecha de Inicio:</b>
+                            <p>{{talentohumano.startDate}}</p>
+                            <b>Jornada Laboral:</b>
+                            <p>{{talentohumano.jornada}}</p>
+                            <b>Lugar de Prestación de Servicios:</b>
+                            <p>{{talentohumano.lugarPrestacionServicios}}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <b>Modalidad de Trabajo:</b>
+                            <p>{{talentohumano.modalidad}}</p>
+                            <b>Fecha de Terminación:</b>
+                            <p>{{talentohumano.endDate}}</p>
+                            <b>Salario Mensual:</b>
+                            <p>{{talentohumano.monthlySalary}}</p>
+                            <b>Departamento de Prestación de Servicios:</b>
+                            <p>{{talentohumano.departamentoPrestacionServicios}}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <b>Cargo:</b>
+                            <p>{{talentohumano.cargo}}</p>
+                            <b>Duración en meses:</b>
+                            <p>{{talentohumano.durationMonths}}</p>
+                            <b>Salario Total:</b>
+                            <p>{{talentohumano.totalSalary}}</p>
+                            <b>Metodo de Pago:</b>
+                            <p>{{talentohumano.paymentMethod}}</p>
+                        </div>
+                        <div class="col-md-12">
+                            <b>Funciones Especificas:</b>
+                            <pre style="font-family: inherit; font-size: inherit; white-space: pre-wrap; word-wrap: break-word; overflow: hidden;">{{talentohumano.functions}}</pre>
+                            <b>Objeto del Contrato:</b>
+                            <pre style="font-family: inherit; font-size: inherit; white-space: pre-wrap; word-wrap: break-word; overflow: hidden;">
+                                {{talentohumano.contractsObject}}
+                            </pre>
+                        </div>
+
+                        <h3 class="text-center" style="color: #BA0F15;">DOCUMENTOS</h3>
+
+                        <div class="col-md-4">
+                            <b>Titulos:</b>
+                            <p>{{talentohumano.titulos}}</p>
+                            <b>Documento de Identidad:</b>
+                            <p>{{talentohumano.idPicture}}</p>
+                            <b>Certificado VPN:</b>
+                            <p>{{talentohumano.vpnCertificate}}</p>
+                            <b>Formato Consulta Delitos Sexuales:</b>
+                            <p>{{talentohumano.sexualFormat}}</p>
+                            {% if talentohumano.disabilityCertificated %}
+                                <b>Certificado de Discapacidad:</b>
+                                <p class="text-center"><a href="{{ talentohumano.disabilityCertificated.url }}" download>Descargar</a></p>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <b>Compromiso de Confidencialidad:</b>
+                            <p>{{talentohumano.confidentialityCompromise}}</p>  
+                            <b>RUT Actualizado:</b>
+                            <p>{{talentohumano.updatedRut}}</p>
+                            <b>Autorización de Tratamiento de Datos:</b>
+                            <p>{{talentohumano.treatmentAuthorization}}</p> 
+                            <b>Autorización de uso de Audio, Foto y Video:</b>
+                            <p>{{talentohumano.audioPhotoAuthorization}}</p>
+                            {% if talentohumano.libretaMilitar %}
+                                <b>Libreta Militar:</b>
+                                <p class="text-center"><a href="{{ talentohumano.libretaMilitar.url }}" download>Descargar</a></p>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <b>Hoja de Vida:</b>
+                            <p>{{talentohumano.resume}}</p>
+                            <b>Certificado Medico:</b>
+                            <p>{{talentohumano.medicalCertificate}}</p>
+                            <b>Certificado Laboral:</b>
+                            <p>{{talentohumano.laborCertificate}}</p>
+                            {% if talentohumano.drivingLicense %}
+                                <b>Licencia de Conducir:</b>
+                                <p class="text-center"><a href="{{ talentohumano.drivingLicense.url }}" download>Descargar</a></p>
+                            {% endif %}
+                            {% if talentohumano.professionalCard %}
+                                <b>Carta Profesional:</b>
+                                <p class="text-center"><a href="{{ talentohumano.professionalCard.url }}" download>Descargar</a></p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                {% else %}
+
+                <div class="container">
+                    <div class="row">
+
+                        <h3 class="text-center" style="color: #BA0F15;">INFORMACIÓN PERSONAL</h3>
+
+                        <div class="col-md-4">
+                            <b>Activo:</b>
+                            <p>{{form.activo}}</p>
+                            <b>Fecha de Expedición del Documento:</b>
+                            <p>{{form.docExpeditionDate}}</p>
+                            <b>Segundo Nombre:</b>
+                            <p>{{form.secondName}}</p>
+                            <b>Sexo:</b>
+                            <p>{{form.sex}}</p>
+                            <b>Dirección:</b>
+                            <p>{{form.residenceAddress}}</p>
+                            <b>Telefono de un Contacto:</b>
+                            <p>{{form.contactPhone}}</p>
+                            <b>Nivel de Escolaridad:</b>
+                            <p>{{form.escolaridad}}</p>
+                            <b>Grupo Sanguineo:</b>
+                            <p>{{form.bloodGroup}}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <b>Tipo de Identificación:</b>
+                            <p>{{form.idType}}</p>
+                            <b>Lugar de Expedición del Documento:</b>
+                            <p>{{form.expeditionPlace}}</p>
+                            <b>Primer Apellido:</b>
+                            <p>{{form.firstLastname}}</p>
+                            <b>Fecha de Nacimiento:</b>
+                            <p>{{form.birthday}}</p>
+                            <b>Municipio de Residencia:</b>
+                            <p>{{form.municipalitieResidence}}</p>
+                            <b>Correo Personal:</b>
+                            <p>{{form.personalEmail}}</p>
+                            <b>Profesión:</b>
+                            <p>{{form.profesion}}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <b>Documento:</b>
+                            <p>{{form.document}}</p>
+                            <b>Primer Nombre:</b>
+                            <p>{{form.firstName}}</p>
+                            <b>Segundo Apellido:</b>
+                            <p>{{form.secondLastname}}</p>
+                            <b>Lugar de Nacimiento:</b>
+                            <p>{{form.birthPlace}}</p>
+                            <b>Telefono:</b>
+                            <p>{{form.phone}}</p>
+                            <b>Correo Institucional:</b>
+                            <p>{{form.professionalEmail}}</p>
+                            <b>Estado Civil:</b>
+                            <p>{{form.estadoCivil}}</p>
+                        </div>
+
+                        <h3 class="text-center" style="color: #BA0F15;">INFORMACIÓN SEGURIDAD</h3>
+
+                        <div class="col-md-4">
+                            <b>EPS</b>
+                            <p>{{form.eps}}</p>
+                            <b>AFS</b>
+                            <p>{{form.afs}}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <b>Codigo del Centro de Trabajo:</b>
+                            <p>{{form.codigoCentroTrabajo}}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <b>Codigo de la Actividad a Desarrollar:</b>
+                            <p>{{form.codigoActividadDesarrollar}}</p>
+                        </div>
+
+                        <h3 class="text-center" style="color: #BA0F15;">INFORMACIÓN CONTRACTUAL</h3>
+
+                        <div class="col-md-4">
+                            <b>Tipo de Contrato:</b>
+                            <p>{{form.contractType}}</p>
+                            <b>Fecha de Inicio:</b>
+                            <p>{{form.startDate}}</p>
+                            <b>Jornada Laboral:</b>
+                            <p>{{form.jornada}}</p>
+                            <b>Lugar de Prestación de Servicios:</b>
+                            <p>{{form.lugarPrestacionServicios}}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <b>Modalidad de Trabajo:</b>
+                            <p>{{form.modalidad}}</p>
+                            <b>Fecha de Terminación:</b>
+                            <p>{{form.endDate}}</p>
+                            <b>Salario Mensual:</b>
+                            <p>{{form.monthlySalary}}</p>
+                            <b>Departamento de Prestación de Servicios:</b>
+                            <p>{{form.departamentoPrestacionServicios}}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <b>Cargo:</b>
+                            <p>{{form.cargo}}</p>
+                            <b>Duración en meses:</b>
+                            <p>{{form.durationMonths}}</p>
+                            <b>Salario Total:</b>
+                            <p>{{form.totalSalary}}</p>
+                            <b>Metodo de Pago:</b>
+                            <p>{{form.paymentMethod}}</p>
+                        </div>
+
+                        <div class="col-md-12">
+                            <b>Funciones Especificas:</b>
+                            <p>{{form.functions}}</p>
+                            <b>Objeto del Contrato:</b>
+                            <p>{{form.contractsObject}}</p>
+                        </div>
+
+                        <h3 class="text-center" style="color: #BA0F15;">DOCUMENTOS</h3>
+
+                        <div class="col-md-4">
+                            <b>Titulos:</b>
+                            <p>{{form.titulos}}</p>
+                            {% if talentohumano.titulos %}
+                            <p class="text-center"><a href="{{ talentohumano.titulos.url }}" download>Descargar</a></p>
+                            {% endif %}
+                            <b>Documento de Identidad:</b>
+                            <p>{{form.idPicture}}</p>
+                            {% if talentohumano.idPicture %}
+                            <p class="text-center"><a href="{{ talentohumano.idPicture.url }}" download>Descargar</a></p>
+                            {% endif %}
+                            <b>Certificado VPN:</b>
+                            <p>{{form.vpnCertificate}}</p>
+                            {% if talentohumano.vpnCertificate %}
+                            <p class="text-center"><a href="{{ talentohumano.vpnCertificate.url }}" download>Descargar</a></p>
+                            {% endif %}
+                            <b>Formato Consulta Delitos Sexuales:</b>
+                            <p>{{form.sexualFormat}}</p>
+                            {% if talentohumano.sexualFormat %}
+                            <p class="text-center"><a href="{{ talentohumano.sexualFormat.url }}" download>Descargar</a></p>
+                            {% endif %}
+                            <b>Certificado de Discapacidad:</b>
+                            <p>{{form.disabilityCertificate}}</p>
+                            {% if talentohumano.disabilityCertificate %}
+                            <p class="text-center"><a href="{{ talentohumano.disabilityCertificate.url }}" download>Descargar</a></p>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <b>Compromiso de Confidencialidad:</b>
+                            <p>{{form.confidentialityCompromise}}</p> 
+                            {% if talentohumano.confidentialityCompromise %}
+                            <p class="text-center"><a href="{{ talentohumano.confidentialityCompromise.url }}" download>Descargar</a></p>
+                            {% endif %} 
+                            <b>RUT Actualizado:</b>
+                            <p>{{form.updatedRut}}</p>
+                            {% if talentohumano.updatedRut %}
+                            <p class="text-center"><a href="{{ talentohumano.updatedRut.url }}" download>Descargar</a></p>
+                            {% endif %}
+                            <b>Autorización de Tratamiento de Datos:</b>
+                            <p>{{form.treatmentAuthorization}}</p> 
+                            {% if talentohumano.treatmentAuthorization %}
+                            <p class="text-center"><a href="{{ talentohumano.treatmentAuthorization.url }}" download>Descargar</a></p>
+                            {% endif %}
+                            <b>Autorización de uso de Audio, Foto y Video:</b>
+                            <p>{{form.audioPhotoAuthorization}}</p>
+                            {% if talentohumano.audioPhotoAuthorization %}
+                            <p class="text-center"><a href="{{ talentohumano.audioPhotoAuthorization.url }}" download>Descargar</a></p>
+                            {% endif %}
+                            <b>Libreta Militar:</b>
+                            <p>{{form.libretaMilitar}}</p>
+                            {% if talentohumano.libretaMilitar %}
+                            <p class="text-center"><a href="{{ talentohumano.libretaMilitar.url }}" download>Descargar</a></p>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-4">
+                            <b>Hoja de Vida:</b>
+                            <p>{{form.resume}}</p>
+                            {% if talentohumano.resume %}
+                            <p class="text-center"><a href="{{ talentohumano.resume.url }}" download>Descargar</a></p>
+                            {% endif %}
+                            <b>Certificado Medico:</b>
+                            <p>{{form.medicalCertificate}}</p>
+                            {% if talentohumano.medicalCertificate %}
+                            <p class="text-center"><a href="{{ talentohumano.medicalCertificate.url }}" download>Descargar</a></p>
+                            {% endif %}
+                            <b>Certificado Laboral:</b>
+                            <p>{{form.laborCertificate}}</p>
+                            {% if talentohumano.laborCertificate %}
+                            <p class="text-center"><a href="{{ talentohumano.laborCertificate.url }}" download>Descargar</a></p>
+                            {% endif %}
+                            <b>Licencia de Conducir:</b>
+                            <p>{{form.drivingLicense}}</p>
+                            {% if talentohumano.drivingLicense %}
+                            <p class="text-center"><a href="{{ talentohumano.drivingLicense.url }}" download>Descargar</a></p>
+                            {% endif %}
+                            <b>Carta Profesional:</b>
+                            <p>{{form.professionalCard}}</p>
+                            {% if talentohumano.professionalCard %}
+                            <p class="text-center"><a href="{{ talentohumano.professionalCard.url }}" download>Descargar</a></p>
+                            {% endif %}
+                        </div>
+
+                    </div>
+                </div>
+
+                {% endif %}
+
+                {% if tasks %}
+
+                    {% if talentohumano.sex == 'Mujer' %}
+
+                        <h4 class="text-center"> Contratos a los que se encuentra asignada: </h4>
+                        <ul class="text-center">
+                            {% for task in tasks %}
+                            <a href="{% url 'task_detail' task.id %}">{{ task.document }} ({{ task.nombre }})</a>
+                            <br>
+                            {% endfor %}
+                        </ul>
+
+                    {% endif %}
+
+                    {% if talentohumano.sex == 'Hombre' %}
+
+                        <h4 class="text-center"> Contratos a los que se encuentra asignado: </h4>
+                        <ul class="text-center">
+                            {% for task in tasks %}
+                            <a href="{% url 'task_detail' task.id %}">{{ task.document }} ({{ task.nombre }})</a>
+                            <br>
+                            {% endfor %}
+                        </ul>
+
+                    {% endif %}
+
+                    {% if talentohumano.sex == 'Otro' %}
+
+                        <h4 class="text-center"> Contratos a los que se encuentra asignad@: </h4>
+                        <ul class="text-center">
+                            {% for task in tasks %}
+                            <a href="{% url 'task_detail' task.id %}">{{ task.document }} ({{ task.nombre }})</a>
+                            <br>
+                            {% endfor %}
+                        </ul>
+
+                    {% endif %}
+
+                {% endif %}
+                
+                <div class="row text-center">
+                    <div class="col">
+                        {% if user.usuario.userType == 'Auxiliar' %}
+                        <button class="btn btn-outline-dark btn-block btn-custom-width">
+                            Aceptar
+                        </button>
+                        {% else %}
+                        <button class="btn btn-outline-dark btn-block btn-custom-width">
+                            Actualizar Talento Humano
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </form>
+
+            <div class="col text-center">
+                {% if user.usuario.userType != 'Auxiliar' %}
+
+                <br>
+                
+                <form id="delete-form" action="{% url 'delete_talentohumano' talentohumano.id %}" method="POST">
+                    {% csrf_token %}
+                    <button class="btn btn-outline-danger btn-block btn-custom-width" id="delete-btn">
+                        Eliminar Talento Humano
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+
+            <br>
+            
+            <div class="col text-center">
+                <form action="{% url 'generarLaboral' talentohumano.id %}" method="POST">
+                    {% csrf_token %}
+                    <button class="btn btn-outline-success btn-custom-width">
+                        Generar Certificado
+                    </button>
+                </form>
+            </div>
+            <br>
+            {% if comentarios %}
+                <div class="comments-section text">
+                    <h2 class="text-center" style="color: #BA0F15;">COMENTARIOS</h2>
+                    <ul class="comment-list">
+                        {% for comment in comentarios %}
+                            <li class="comment">
+                                <div class="comment-metadata">
+                                    <p><b>Usuario:</b>
+                                        <a href="{% url 'usuario_detail' comment.usuario.id %}">{{ comment.usuario.nombreCompleto }}</a>
+                                    </p>
+                                    <p style="color: rgb(121, 121, 121); font-size: small;"><b>Fecha:</b> {{ comment.date_made }}</p>
+                                </div>
+                                <p>{{ comment.body }}</p>
+                            </li>
+                            <hr>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <div class="d-flex justify-content-center">
+                    {% if comentarios.has_other_pages %}
+                        <ul class="pagination">
+                            {% if comentarios.has_previous %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page=1">Primera</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ comentarios.previous_page_number }}">Anterior</a>
+                                </li>
+                            {% endif %}
+                            {% for i in comentarios.paginator.page_range %}
+                                {% if comentarios.number == i %}
+                                    <li class="page-item active">
+                                        <a class="page-link" href="#">{{ i }}</a>
+                                    </li>
+                                {% else %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                            {% if comentarios.has_next %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ comentarios.next_page_number }}">Siguiente</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ comentarios.paginator.num_pages }}">Ultima</a>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    {% endif %}
+                </div>
+
+                {% if comentarios.paginator.num_pages > 1 %}
+                    {% if comentarios.paginator.count >= 10 %}
+                        <p class="text-center">Seleccione cuántos comentarios desea ver por página:</p>
+                        <div class="d-flex justify-content-center mb-3">
+                            <form method="get" action="{% url 'talentohumano_detail' talentohumano.id %}">
+                                <button type="submit" name="page_size" value="5" class="btn btn-primary me-2 {% if comentarios.paginator.per_page == 5 %}active{% endif %}">5</button>
+                            </form>
+                            <form method="get" action="{% url 'talentohumano_detail' talentohumano.id %}">
+                                <button type="submit" name="page_size" value="10" class="btn btn-primary me-2 {% if comentarios.paginator.per_page == 10 %}active{% endif %}">10</button>
+                            </form>
+                        </div>
+                    {% endif %}
+                    {% if comentarios.paginator.count >= 20 %}
+                        <div class="d-flex justify-content-center mb-3">
+                            <form method="get" action="{% url 'talentohumano_detail' talentohumano.id %}">
+                                <button type="submit" name="page_size" value="20" class="btn btn-primary {% if comentarios.paginator.per_page == 20 %}active{% endif %}">20</button>
+                            </form>
+                        </div>
+                    {% endif %}
+                {% endif %}
+
+                <div class="d-flex justify-content-center">
+                    <form method="get" action="{% url 'add_comment' talentohumano.id %}">
+                        <button class="btn btn-outline-dark btn-custom-width" type="submit">Realizar Otro Comentario</button>
+                    </form>
+                </div>
+            {% else %}
+            <div class="d-flex justify-content-center">
+                <form method="get" action="{% url 'add_comment' talentohumano.id %}">
+                    <button class="btn btn-outline-dark btn-custom-width" type="submit">Realizar Comentario</button>
+                </form>
+            </div>
+                
+            {% endif %}
+            <br>
+
+            {% if talentohumano.resume %}
+
+                <h2>Archivos:</h2>
+                
+                <b>Titulos:</b>
+                <p><a href="{{ talentohumano.titulos.url }}">{{ talentohumano.titulos.name }}</a></p>
+
+                <b>Compromiso de Cofidencialidad:</b>
+                <p><a href="{{ talentohumano.confidentialityCompromise.url }}">{{ talentohumano.confidentialityCompromise.name }}</a></p>
+                
+                <b>Hoja de Vida:</b>
+                <p><a href="{{ talentohumano.resume.url }}">{{ talentohumano.resume.name }}</a></p>
+
+                <b>Foto del Documento de Identidad:</b>
+                <p><a href="{{ talentohumano.idPicture.url }}">{{ talentohumano.idPicture.name }}</a></p>
+
+                <b>RUT Actualizado:</b>
+                <p><a href="{{ talentohumano.updatedRut.url }}">{{ talentohumano.updatedRut.name }}</a></p>
+
+                <b>Certificado Medico:</b>
+                <p><a href="{{ talentohumano.medicalCertificate.url }}">{{ talentohumano.medicalCertificate.name }}</a></p>
+
+                <b>Certificado VPN:</b>
+                <p><a href="{{ talentohumano.vpnCertificate.url }}">{{ talentohumano.vpnCertificate.name }}</a></p>
+
+                <b>Autorización de Tratamiento de Dato</b>
+                <p><a href="{{ talentohumano.treatmentAuthorization.url }}">{{ talentohumano.treatmentAuthorization.name }}</a></p>
+
+                <b>Certificado Laboral:</b>
+                <p><a href="{{ talentohumano.laborCertificate.url }}">{{ talentohumano.laborCertificate.name }}</a></p>
+
+                <b>Formato Consulta Delitos Sexuales</b>
+                <p><a href="{{ talentohumano.sexualFormat.url }}">{{ talentohumano.sexualFormat.name }}</a></p>
+
+                <b>Autorización de uso de Audio, Foto y Video</b>
+                <p><a href="{{ talentohumano.audioPhotoAuthorization.url }}">{{ talentohumano.audioPhotoAuthorization.name }}</a></p>
+
+                {% if talentohumano.drivingLicense %}
+
+                    <b>Licencia de Conducción:</b>
+                    <p><a href="{{ talentohumano.drivingLicense.url }}">{{ talentohumano.drivingLicense.name }}</a></p>
+
+                {% endif %}
+
+                {% if talentohumano.disabilityCertificate %}
+
+                    <b>Certificado de Discapacidad:</b>
+                    <p><a href="{{ talentohumano.disabilityCertificate.url }}">{{ talentohumano.disabilityCertificate.name }}</a></p>
+
+                {% endif %}
+
+                {% if talentohumano.libretaMilitar %}
+
+                    <b>Libreta Militar:</b>
+                    <p><a href="{{ talentohumano.libretaMilitar.url }}">{{ talentohumano.libretaMilitar.name }}</a></p>
+
+                {% endif %}
+
+                {% if talentohumano.professionalCard %}
+
+                    <b>Tarjeta Profesional:</b>
+                    <p><a href="{{ talentohumano.professionalCard.url }}">{{ talentohumano.professionalCard.name }}</a></p>
+                    
+                {% endif %}
+
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.getElementById('delete-btn').addEventListener('click', function(event) {
+        event.preventDefault();
+        Swal.fire({
+            title: 'Mensaje de confirmación de eliminación',
+            text: '¿Está seguro de que desea eliminar el talento humano identificado con el documento {{ talentohumano.document }} de nombre {{ talentohumano.nombreCompleto}}?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('delete-form').submit();
+            }
+        });
+    });
+</script>
+
+<style>
+    .btn-custom-width {
+        width: 400px; 
+    }
+</style>
+
+{% endblock %}

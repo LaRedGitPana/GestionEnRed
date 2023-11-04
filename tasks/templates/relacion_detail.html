@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="main container card card-body">
+    <div class="row">
+        <div class="col">
+            {% if relacion.contractType %}
+            <h2 class="text" style="color: #3A833A; text-align: center;">{{relacion.talentoHumano.nombreCompleto}} ({{relacion.talentoHumano.document}}) vinculado con {{relacion.task}}</h2>
+            {% else %}
+            <h2 class="text" style="color: #d9534f; text-align: center;">{{relacion.talentoHumano.nombreCompleto}} ({{relacion.talentoHumano.document}}) vinculado con {{relacion.task}}</h2>
+            {% endif %}
+
+            {% if form.non_field_errors %}
+                <div style="color: red; font-size: 18px;">
+                    {{ form.non_field_errors }}
+                </div>
+            {% endif %}
+
+            <br>
+
+            <form method="POST">
+                {% csrf_token %}
+
+                {% if user.usuario.userType == 'Auxiliar' %}
+
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <b>Tipo de Contrato:</b>
+                            <p>{{relacion.contractType}}</p> 
+                            <b>Jornada Laboral:</b>
+                            <p>{{relacion.jornada}}</p>
+                            <b>Metodo de Pago:</b>
+                            <p>{{relacion.paymentMethod}}</p>
+                            <b>Fecha de Inicio:</b>
+                            <p>{{relacion.startDate}}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <b>Modalidad:</b>
+                            <p>{{relacion.modalidad}}</p>
+                            <b>Lugar de Prestación de Servicios:</b>
+                            <p>{{relacion.lugarPrestacionServicios}}</p>
+                            <b>Valor Mensual del CPSP:</b>
+                            <p>{{relacion.monthlySalary}}</p>
+                            <b>Fecha de Terminación:</b>
+                            <p>{{relacion.endDate}}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <b>Cargo:</b>
+                            <p>{{relacion.cargo}}</p>
+                            <b>Departamento de Prestación de Servicios:</b>
+                            <p>{{relacion.departamentoPrestacionServicios}}</p>
+                            <b>Valor Total del CPSP:</b>
+                            <p>{{relacion.totalSalary}}</p>
+                            <b>Duración en Meses:</b>
+                            <p>{{relacion.durationMonths}}</p>
+                        </div>
+                        <div class="col-md-12">
+                            <b>Actividades Especificas:</b>
+                            <pre style="font-family: inherit; font-size: inherit;">{{relacion.functions}}</pre>
+                            <b>Objeto del Contrato:</b>
+                            <pre style="font-family: inherit; font-size: inherit;">{{relacion.contractsObject}}</pre>
+                        </div>
+                    </div>
+                </div>
+
+                {% else %}
+
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <b>Tipo de Contrato:</b>
+                            <p>{{form.contractType}}</p> 
+                            <b>Jornada Laboral:</b>
+                            <p>{{form.jornada}}</p>
+                            <b>Metodo de Pago:</b>
+                            <p>{{form.paymentMethod}}</p>
+                            <b>Fecha de Inicio:</b>
+                            <p>{{form.startDate}}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <b>Modalidad:</b>
+                            <p>{{form.modalidad}}</p>
+                            <b>Lugar de Prestación de Servicios:</b>
+                            <p>{{form.lugarPrestacionServicios}}</p>
+                            <b>Valor Mensual del CPSP:</b>
+                            <p>{{form.monthlySalary}}</p>
+                            <b>Fecha de Terminación:</b>
+                            <p>{{form.endDate}}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <b>Cargo:</b>
+                            <p>{{form.cargo}}</p>
+                            <b>Departamento de Prestación de Servicios:</b>
+                            <p>{{form.departamentoPrestacionServicios}}</p>
+                            <b>Valor Total del CPSP:</b>
+                            <p>{{form.totalSalary}}</p>
+                        </div>
+                        <div class="col-md-12">
+                            <b>Actividades Especificas:</b>
+                            <pre style="font-family: inherit; font-size: inherit; white-space: pre-wrap; word-wrap: break-word; overflow: hidden;">{{form.functions}}</pre>
+                            <b>Objeto del Contrato:</b>
+                            <pre style="font-family: inherit; font-size: inherit; white-space: pre-wrap; word-wrap: break-word; overflow: hidden;">{{form.contractsObject}}</pre>
+                        </div>
+                    </div>
+                </div>
+
+                {% endif %}
+
+                <div class="container">
+                    <div class="row text-center">
+                        <div class="col-md-6">
+                            <b>Talento Humano:</b>
+                            <p>
+                                <a href="{% url 'talentohumano_detail' relacion.talentoHumano.id %}">{{ relacion.talentoHumano.nombreCompleto }}</a>
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <b>Contrato:</b>
+                            <p>
+                                <a href="{% url 'task_detail' relacion.task.id %}"> {{ relacion.task.document}} ({{ relacion.task.nombre }})</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row text-center">
+                    <div class="col">
+                        {% if user.usuario.userType == 'Auxiliar' %}
+                        <button class="btn btn-outline-dark btn-block btn-custom-width">
+                            Aceptar
+                        </button>
+                        {% else %}
+                        <button class="btn btn-outline-dark btn-block btn-custom-width">
+                            Actualizar Asignación
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </form>
+
+            <div class="col text-center">
+                {% if user.usuario.userType != 'Auxiliar' %}
+
+                <br>
+
+                <form id="delete-form" action="{% url 'delete_relacion' relacion.id %}" method="POST">
+                    {% csrf_token %}
+                    <button class="btn btn-outline-danger btn-block btn-custom-width" id="delete-btn">
+                        Eliminar Asignación
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+
+            <br>
+            
+            {% if relacion.contractType %}
+                <div class=" col text-center">
+                    <form action="{% url 'generarOtro' relacion.id %}" method="POST">
+                        {% csrf_token %}
+                        <button class="btn btn-outline-success btn-custom-width">
+                            Generar Certificado
+                        </button>
+                    </form>
+                </div>
+            {% else %}
+                
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.getElementById('delete-btn').addEventListener('click', function(event) {
+        event.preventDefault();
+        Swal.fire({
+            title: 'Mensaje de confirmación de eliminación',
+            text: '¿Está seguro de que desea eliminar este registro entre el talento humano identificado con el documento {{ relacion.talentoHumano.document }} ({{ relacion.talentoHumano.nombreCompleto }}) y el contrato identificado con el numero {{ relacion.task.document }} ({{ relacion.task.nombre }})?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('delete-form').submit();
+            }
+        });
+    });
+</script>
+
+<style>
+    .btn-custom-width {
+        width: 400px; 
+    }
+</style>
+
+{% endblock %}

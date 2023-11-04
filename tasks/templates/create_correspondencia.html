@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <main class="container">
+        <div class="row">
+            <div class="col">
+                
+                <form method="POST" class="card card-body" enctype="multipart/form-data">
+
+                    <h2 style="text-align: center;">Crear Correspondencia</h2>
+
+                    {{error}}
+    
+                    {% csrf_token %}
+
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <b>Fecha de Creación:</b>
+                                <p>{{form.dateCreated}}</p>
+                                <b>Asunto:</b>
+                                <p>{{form.asunto}}</p>
+                            </div>
+                            <div class="col-md-4">
+                                <b>Area o Proyecto:</b>
+                                <p>{{form.areaProject}}</p>
+                            </div>
+                            <div class="col-md-4">
+                                <b>Enviado a:</b>
+                                <p>{{form.sentTo}}</p>
+                                <b>Archivo:</b>
+                                <p>{{form.document}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary">
+                        Guardar
+                    </button>
+                </form>
+
+            </div>
+        </div>
+    </main>
+    
+{% endblock %}

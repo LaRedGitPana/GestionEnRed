@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="main container card card-body">
+    <div class="row">
+        <div class="col">
+            <h2 class="text" style="color: #3A833A; text-align: center;">Correspondencia {{correspondencia.codigo}}</h2>
+
+            <br>
+
+            {{error}}
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                {% if user != correspondencia.user %}
+
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <b>Usuario:</b>
+                            <p>{{correspondencia.user}}</p>
+                            <b>Tipo:</b>
+                            <p>{{correspondencia.tipo}}</p>
+                            <b>Enviado a:</b>
+                            <p>{{ correspondencia.sentTo }}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <b>Año:</b>
+                            <p>{{correspondencia.año}}</p>
+                            <b>Fecha de Creación:</b>
+                            <p>{{ correspondencia.dateCreated }}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <b>Codigo:</b>
+                            <p>{{correspondencia.codigo}}</p>
+                            <b>Area o Proyecto:</b>
+                            <p>{{ correspondencia.areaProject }}</p>
+                            <b>Archivo:</b>
+                            <p><a href="{{ correspondencia.document.url }}" download>Descargar</a></p>
+                        </div>
+                        <div class="col-md-12">
+                            <b>Asunto:</b>
+                            <pre style="font-family: inherit; font-size: inherit; white-space: pre-wrap; word-wrap: break-word; overflow: hidden;">{{correspondencia.asunto}}</pre>
+                        </div>
+                    </div>
+                </div>
+
+                {% else %}
+
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <b>Usuario:</b>
+                            <p>{{correspondencia.user}}</p>
+                            <b>Tipo:</b>
+                            <p>{{correspondencia.tipo}}</p>
+                            <b>Enviado a:</b>
+                            <p>{{ form.sentTo }}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <b>Año:</b>
+                            <p>{{correspondencia.año}}</p>
+                            <b>Fecha de Creación:</b>
+                            <p>{{ form.dateCreated }}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <b>Codigo:</b>
+                            <p>{{correspondencia.codigo}}</p>
+                            <b>Area o Proyecto:</b>
+                            <p>{{ form.areaProject }}</p>
+                            <b>Archivo:</b>
+                            <p>{{ form.document }}</p>
+                            <p class="text-center"><a href="{{ correspondencia.document.url }}" download>Descargar</a></p>
+                        </div>
+                        <div class="col-md-12">
+                            <b>Asunto:</b>
+                            <p>{{ form.asunto }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {% endif %}
+
+                <div class="row text-center">
+                    <div class="col">
+                        {% if user == correspondencia.user %}
+                        <button class="btn btn-outline-primary btn-block btn-custom-width">
+                            Actualizar Correspondencia
+                        </button>
+                        {% else %}
+                        <button class="btn btn-outline-primary btn-block btn-custom-width">
+                            Aceptar
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </form>
+
+            <br>
+
+            <div class="col text-center">
+                {% if user == correspondencia.user %}
+                <form id="delete-form" action="{% url 'delete_correspondencia' correspondencia.id %}" method="POST">
+                    {% csrf_token %}
+                    <button class="btn btn-outline-danger btn-block btn-custom-width" id="delete-btn">
+                        Eliminar Correspondencia
+                    </button>
+                </form> 
+                {% endif %}
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.getElementById('delete-btn').addEventListener('click', function(event) {
+        event.preventDefault();
+        Swal.fire({
+            title: 'Mensaje de confirmación de eliminación',
+            text: '¿Está seguro de que desea eliminar esta correspondencia identificada con el codigo {{ correspondencia.codigo }}?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('delete-form').submit();
+            }
+        });
+    });
+</script>
+
+<style>
+    .btn-custom-width {
+        width: 400px; 
+    }
+</style>
+
+{% endblock %}

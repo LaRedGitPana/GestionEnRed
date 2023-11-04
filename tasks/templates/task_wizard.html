@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <main class="container">
+        <div class="row">
+
+            <form method="POST" class="card card-body" enctype="multipart/form-data">
+
+                <h2 style="text-align: center;">Crear Contrato</h2>
+
+                {% if form.non_field_errors %}
+                    <div style="color: red; font-size: 18px;">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                <br>
+
+                {% csrf_token %}
+                {% if step == 1 %}
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <b>Año:</b>
+                        <p>{{ form.year }}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <b>Fecha de Inicio:</b>
+                        <p>{{ form.startDate }}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <b>Fecha de Terminación:</b>
+                        <p>{{ form.endDate }}</p>
+                    </div>
+                </div>
+
+                <button class="btn btn-outline-primary">
+                    Siguiente
+                </button>
+
+                {% elif step == 2 %}
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <b>Salario Minimo:</b>
+                        <p>{{ form.minimumSalary }}</p>
+                        <b>Aporte Contratante:</b>
+                        <p>{{ form.contractorsBudget }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <b>Valor Contrato en SMMLV:</b>
+                        <p>{{ form.contractValueSMMLV }}</p>
+                        <b>Aporte Fundación ONG LA RED:</b>
+                        <p>{{ form.redsBudget }}</p>
+                    </div>
+                </div>
+
+                <button class="btn btn-outline-primary">
+                    Siguiente
+                </button>
+
+                {% elif step == 3 %}
+
+                <div class="row">
+                    <div class="col-md-4">
+                        <b>Tipo de Contrato:</b>
+                        <p>{{ form.contractType }}</p>
+                        <b># RUP:</b>
+                        <p>{{ form.rup }}</p>
+                        <b>Departamentos:</b>
+                        <p>{{ form.departments }}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <b>Nombre del Contrato:</b>
+                        <p>{{ form.nombre }}</p>
+                        <b>Numero del Contrato:</b>
+                        <p>{{ form.document }}</p>
+                        <b>Municipios:</b>
+                        <p>{{ form.municipalities }}</p>
+                    </div>
+                    <div class="col-md-4">
+                        <b># Secop:</b>
+                        <p>{{ form.secop }}</p>
+                        <b>Contratante:</b>
+                        <p>{{ form.contractor }}</p>
+                        <b>Tema:</b>
+                        <p>{{ form.topic }}</p>
+                    </div>
+
+                    <div class="col-md-12">
+                        <b>Funciones Especificas:</b>
+                        <p>{{ form.object }}</p>
+                        <b>Indicadores de Resultados:</b>
+                        <p>{{ form.resultsIndicator }}</p>
+                    </div>
+                </div>
+
+                <button class="btn btn-outline-primary">
+                    Guardar
+                </button>
+
+                {% endif %}
+
+            </form>
+            
+        </div>
+    </main>
+    
+{% endblock %}

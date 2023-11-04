@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <main class="container">
+        <div class="row">
+            <form method="POST" class="card card-body">
+
+                <h2 style="text-align: center;" >Crear Usuario</h2>
+
+                <br>
+                
+                {% csrf_token %}
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <b>Nombre de Usuario:</b>
+                            <p>{{form.username}}</p>
+                            <b>Documento de Identificación:</b>
+                            <p>{{form.document}}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <b>Nombres:</b>
+                            <p>{{form.first_name}}</p>
+                            <b>Red o Proyecto al que pertenece:</b>
+                            <p>{{form.red}}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <b>Apellidos:</b>
+                            <p>{{form.last_name}}</p>
+                            <b>Tipo de Usuario:</b>
+                            <p>{{form.userType}}</p>
+                        </div>
+
+                        <div class="col-md-6">
+                            <b>Contraseña:</b>
+                            <p>{{form.password1}}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <b>Confirme la Contraseña:</b>
+                            <p>{{form.password2}}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn btn-outline-primary btn-custom-width">
+                    Guardar
+                </button>
+
+            </form>
+        </div>
+    </main>
+    
+{% endblock %}

@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <main class="container">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <h2 class="text-center display-3 py-5" style="font-weight: bold;">Contratos Finalizados</h2>
+
+                <form method="GET" class="mb-3">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="search" placeholder="Buscar por documento o nombre del contrato">
+                        <button type="submit" class="btn btn-outline-primary">Buscar</button>
+                    </div>
+                </form>
+
+                <div class="row">
+                    {% for task in tasks %}
+                    <div class="col-md-6">
+                        <a class="card mb-3" href="{% url 'task_detail' task.id %}">
+                            <div class="card-body">
+                                <h5 class="card-title">Contrato # {{ task.document }}</h5>
+                                <p>{{ task.user.username }}</p>
+                                <p>{{ task.datecompleted|date:'M j Y:i' }}</p>
+                            </div>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <br>
+
+                {% if tasks.has_other_pages %}
+                    <ul class="pagination justify-content-center">
+                        {% if tasks.has_previous %}
+                            <li class="page-item"><a class="page-link" href="?page=1{% if search_term %}&search={{ search_term }}{% endif %}">Primera</a></li>
+                            <li class="page-item"><a class="page-link" href="?page={{ tasks.previous_page_number }}{% if search_term %}&search={{ search_term }}{% endif %}">Anterior</a></li>
+                        {% endif %}
+                        {% for i in tasks.paginator.page_range %}
+                            {% if tasks.number == i %}
+                                <li class="page-item active"><a class="page-link" href="#">{{ i }} <span class="sr-only"></span></a></li>
+                            {% else %}
+                                <li class="page-item"><a class="page-link" href="?page={{ i }}{% if search_term %}&search={{ search_term }}{% endif %}">{{ i }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                        {% if tasks.has_next %}
+                            <li class="page-item"><a class="page-link" href="?page={{ tasks.next_page_number }}{% if search_term %}&search={{ search_term }}{% endif %}">Siguiente</a></li>
+                            <li class="page-item"><a class="page-link" href="?page={{ tasks.paginator.num_pages }}{% if search_term %}&search={{ search_term }}{% endif %}">Ultima</a></li>
+                        {% endif %}
+                    </ul>
+                {% endif %}
+
+                {% if tasks.paginator.num_pages > 1 %}
+                    {% if tasks.paginator.count >= 20 %}
+                        <p class="text-center">Seleccione cuántos contratos desea ver por página:</p>
+                        <div class="d-flex justify-content-center mb-3">
+                            <form method="get" action="{% url 'tasks_completed' %}">
+                                <button type="submit" name="page_size" value="10" class="btn btn-primary me-2 {% if tasks.paginator.per_page == 10 %}active{% endif %}">10</button>
+                            </form>
+                            <form method="get" action="{% url 'tasks_completed' %}">
+                                <button type="submit" name="page_size" value="20" class="btn btn-primary me-2 {% if tasks.paginator.per_page == 20 %}active{% endif %}">20</button>
+                            </form>
+                        </div>
+                    {% endif %}
+                    {% if tasks.paginator.count >= 50 %}
+                        <div class="d-flex justify-content-center mb-3">
+                            <form method="get" action="{% url 'tasks_completed' %}">
+                                <button type="submit" name="page_size" value="50" class="btn btn-primary {% if tasks.paginator.per_page == 50 %}active{% endif %}">50</button>
+                            </form>
+                        </div>
+                    {% endif %}
+                {% endif %}
+                 
+                {% if user.usuario.userType == 'Admin' or user.usuario.userType == 'General' %}
+
+                    <form method="POST" action="{% url 'generate_excel_report_tasks' %}">
+                        {% csrf_token %}
+                        <button class="btn btn-outline-success btn-custom-width" type="submit">
+                            Generar Reporte
+                        </button>
+                    </form>
+
+                {% endif %}
+
+            </div>
+        </div>
+    </main>
+
+    <style>
+        .btn-custom-width {
+            width: 520px; 
+        }
+    </style>
+    
+{% endblock %}

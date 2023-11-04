@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <main class="container">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <h2 class="text-center display-3 py-5" style="font-weight: bold;">Talento Humano</h2>
+
+                <form method="GET" class="mb-3">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="search" placeholder="Buscar por documento o nombre completo del talento humano">
+                        <button type="submit" class="btn btn-outline-primary">Buscar</button>
+                    </div>
+                </form>
+
+                <div class="row">
+                    {% for talentohumano in talentohumanos %}
+                    <div class="col-md-6">
+                        <a class="card mb-3" href="{% url 'talentohumano_detail' talentohumano.id %}">
+                            <div class="card-body">
+                                <h5 class="card-title">{{talentohumano.nombreCompleto}}</h5>
+                            </div>
+                        </a>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <br>
+
+                {% if talentohumanos.has_other_pages %}
+                    <ul class="pagination justify-content-center">
+                        {% if talentohumanos.has_previous %}
+                            <li class="page-item"><a class="page-link" href="?page=1{% if search_term %}&search={{ search_term }}{% endif %}">Primera</a></li>
+                            <li class="page-item"><a class="page-link" href="?page={{ talentohumanos.previous_page_number }}{% if search_term %}&search={{ search_term }}{% endif %}">Anterior</a></li>
+                        {% endif %}
+                        {% for i in talentohumanos.paginator.page_range %}
+                            {% if talentohumanos.number == i %}
+                                <li class="page-item active"><a class="page-link" href="#">{{ i }} <span class="sr-only"></span></a></li>
+                            {% else %}
+                                <li class="page-item"><a class="page-link" href="?page={{ i }}{% if search_term %}&search={{ search_term }}{% endif %}">{{ i }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                        {% if talentohumanos.has_next %}
+                            <li class="page-item"><a class="page-link" href="?page={{ talentohumanos.next_page_number }}{% if search_term %}&search={{ search_term }}{% endif %}">Siguiente</a></li>
+                            <li class="page-item"><a class="page-link" href="?page={{ talentohumanos.paginator.num_pages }}{% if search_term %}&search={{ search_term }}{% endif %}">Ultima</a></li>
+                        {% endif %}
+                    </ul>
+                {% endif %}
+
+                {% if talentohumanos.paginator.num_pages > 1 %}
+                    {% if talentohumanos.paginator.count >= 20 %}
+                        <p class="text-center">Seleccione cuántos talentos humanos desea ver por página:</p>
+                        <div class="d-flex justify-content-center mb-3">
+                            <form method="get" action="{% url 'talentohumanos' %}">
+                                <button type="submit" name="page_size" value="10" class="btn btn-primary me-2 {% if talentohumanos.paginator.per_page == 10 %}active{% endif %}">10</button>
+                            </form>
+                            <form method="get" action="{% url 'talentohumanos' %}">
+                                <button type="submit" name="page_size" value="20" class="btn btn-primary me-2 {% if talentohumanos.paginator.per_page == 20 %}active{% endif %}">20</button>
+                            </form>
+                        </div>
+                    {% endif %}
+                    {% if talentohumanos.paginator.count >= 50 %}
+                        <div class="d-flex justify-content-center mb-3">
+                            <form method="get" action="{% url 'talentohumanos' %}">
+                                <button type="submit" name="page_size" value="50" class="btn btn-primary {% if talentohumanos.paginator.per_page == 50 %}active{% endif %}">50</button>
+                            </form>
+                        </div>
+                    {% endif %}
+                {% endif %}
+
+                {% if user.usuario.userType == 'Admin' or user.usuario.userType == 'General' %}
+
+                    <form method="POST" action="{% url 'generate_excel_report_talentohumanos' %}">
+                        {% csrf_token %}
+                        <button class="btn btn-success btn-custom-width" type="submit">
+                            Generar Reporte
+                        </button>
+                    </form>
+
+                {% endif %}
+
+            </div>
+        </div>
+    </main>
+
+    <style>
+        .btn-custom-width {
+            width: 520px; 
+        }
+    </style>
+    
+{% endblock %}

@@ -1,0 +1,201 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <main class="container">
+        <div class="row">
+            <div class="col">
+                
+                <form method="POST" class="card card-body" enctype="multipart/form-data">
+
+                    <h2 style="text-align: center;">Crear Talento Humano</h2>
+
+                    {% if form.non_field_errors %}
+                        <div style="color: red; font-size: 18px;">
+                            {{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+
+                    <br>
+    
+                    {% csrf_token %}
+                    {% if step == 1 %}
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <b>Activo:</b>
+                                <p>{{form.activo}}</p>
+                                <b>Fecha de Expedición del Documento:</b>
+                                <p>{{form.docExpeditionDate}}</p>
+                                <b>Segundo Nombre:</b>
+                                <p>{{form.secondName}}</p>
+                                <b>Sexo:</b>
+                                <p>{{form.sex}}</p>
+                                <b>Dirección:</b>
+                                <p>{{form.residenceAddress}}</p>
+                                <b>Telefono del Contacto:</b>
+                                <p>{{form.contactPhone}}</p>
+                                <b>Escolaridad:</b>
+                                <p>{{form.escolaridad}}</p>
+                            </div>
+                            <div class="col-md-4">
+                                <b>Tipo de Identificación:</b>
+                                <p>{{form.idType}}</p>
+                                <b>Lugar de Expedición del Documento:</b>
+                                <p>{{form.expeditionPlace}}</p>
+                                <b>Primer Apellido:</b>
+                                <p>{{form.firstLastname}}</p>
+                                <b>Fecha de Nacimiento:</b>
+                                <p>{{form.birthday}}</p>
+                                <b>Municipio de Residencia:</b>
+                                <p>{{form.municipalitieResidence}}</p>
+                                <b>Correo Personal:</b>
+                                <p>{{form.personalEmail}}</p>
+                                <b>Profesión:</b>
+                                <p>{{form.profesion}}</p>
+                                <b>Grupo Sanguineo:</b>
+                                <p>{{form.bloodGroup}}</p>
+                            </div>
+                            <div class="col-md-4">
+                                <b>Documento:</b>
+                                <p>{{form.document}}</p>
+                                <b>Primer Nombre:</b>
+                                <p>{{form.firstName}}</p>
+                                <b>Segundo Apellido:</b>
+                                <p>{{form.secondLastname}}</p>
+                                <b>Lugar de Nacimiento:</b>
+                                <p>{{form.birthPlace}}</p>
+                                <b>Telefono:</b>
+                                <p>{{form.phone}}</p>
+                                <b>Correo Institucional:</b>
+                                <p>{{form.professionalEmail}}</p>
+                                <b>Estado Civil:</b>
+                                <p>{{form.estadoCivil}}</p>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-outline-primary">
+                            Siguiente
+                        </button>
+
+                    {% elif step == 2 %}
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <b>EPS:</b>
+                            <p>{{form.eps}}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <b>Codigo del Centro de Trabajo:</b>
+                            <p>{{form.codigoCentroTrabajo}}</p>
+                            <b>Codigo de la Actividad a Desarrollar:</b>
+                            <p>{{form.codigoActividadDesarrollar}}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <b>AFS:</b>
+                            <p>{{form.afs}}</p>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-outline-primary">
+                        Siguiente
+                    </button>
+
+                    {% elif step == 3 %}
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <b>Tipo de Contrato:</b>
+                                <p>{{form.contractType}}</p>
+                                <b>Jornada:</b>
+                                <p>{{form.jornada}}</p>
+                                <b>Valor Mensual del CPSP:</b>
+                                <p>{{form.monthlySalary}}</p>
+                                <b>Lugar de Prestación de Servicios:</b>
+                                <p>{{form.lugarPrestacionServicios}}</p>
+                            </div>
+                            <div class="col-md-4">
+                                <b>Modalidad:</b>
+                                <p>{{form.modalidad}}</p>
+                                <b>Fecha de Inicio:</b>
+                                <p>{{form.startDate}}</p>
+                                <b>Valor Total del CPSP:</b>
+                                <p>{{form.totalSalary}}</p>
+                            </div>
+                            <div class="col-md-4">
+                                <b>Cargo:</b>
+                                <p>{{form.cargo}}</p>
+                                <b>Fecha de Terminación:</b>
+                                <p>{{form.endDate}}</p>
+                                <b>Metodo de Pago:</b>
+                                <p>{{form.paymentMethod}}</p>
+                                <b>Departamento de Prestación de Servicios:</b>
+                                <p>{{form.departamentoPrestacionServicios}}</p>
+                            </div>
+
+                            <div class="col-md-12">
+                                <b>Actividades Especificas:</b>
+                                <p>{{form.functions}}</p>
+                                <b>Objeto del Contrato:</b>
+                                <p>{{form.contractsObject}}</p>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-outline-primary">
+                            Siguiente
+                        </button>
+
+                    {% elif step == 4 %}
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <b>Titulos:</b>
+                                <p>{{form.titulos}}</p>
+                                <b>Documento de Identidad:</b>
+                                <p>{{form.idPicture}}</p>
+                                <b>Certificado VPN:</b>
+                                <p>{{form.vpnCertificate}}</p>
+                                <b>Formato Consulta Delitos Sexuales:</b>
+                                <p>{{form.sexualFormat}}</p>
+                                <b>Certificado de Discapacidad:</b>
+                                <p>{{form.disabilityCertificate}}</p>
+                            </div>
+                            <div class="col-md-4">
+                                <b>Compromiso de Confidencialidad:</b>
+                                <p>{{form.confidentialityCompromise}}</p>  
+                                <b>RUT Actualizado:</b>
+                                <p>{{form.updatedRut}}</p>
+                                <b>Autorización de Tratamiento de Datos:</b>
+                                <p>{{form.treatmentAuthorization}}</p> 
+                                <b>Autorización de uso de Audio, Foto y Video:</b>
+                                <p>{{form.audioPhotoAuthorization}}</p>
+                                <b>Libreta Militar:</b>
+                                <p>{{form.libretaMilitar}}</p>
+                            </div>
+                            <div class="col-md-4">
+                                <b>Hoja de Vida:</b>
+                                <p>{{form.resume}}</p>
+                                <b>Certificado Medico:</b>
+                                <p>{{form.medicalCertificate}}</p>
+                                <b>Certificado Laboral:</b>
+                                <p>{{form.laborCertificate}}</p>
+                                <b>Licencia de Conducir:</b>
+                                <p>{{form.drivingLicense}}</p>
+                                <b>Carta Profesional:</b>
+                                <p>{{form.professionalCard}}</p>
+                            </div>
+                        </div>
+            
+                        <button class="btn btn-outline-primary">
+                            Guardar
+                        </button>
+                        
+                    {% endif %}
+
+                </form>
+
+            </div>
+        </div>
+    </main>
+    
+{% endblock %}

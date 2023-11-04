@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <main class="container">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <h2 class="text-center display-3 py-5" style="font-weight: bold;">Correspondencias Externas</h2>
+
+                <form method="GET" class="mb-3">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="search" placeholder="Buscar...">
+                        <button type="submit" class="btn btn-outline-primary">Buscar</button>
+                    </div>
+                </form>
+
+                <div class="row">
+                    {% for correspondencia in correspondecias %}
+                        {% if correspondencia.tipo == 'Externa' %}
+                            <div class="col-md-6">
+                                <a class="card mb-3" href="{% url 'correspondencia_detail' correspondencia.id %}">
+                                    <div class="card-body">
+                                        <h5 class="card-title text-success">Correspondencia # {{ correspondencia.codigo }}</h5>
+                                        <p>{{ correspondencia.user.username }}</p>
+                                    </div>
+                                </a>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+                <br>
+
+                {% if correspondecias.has_other_pages %}
+                    <ul class="pagination justify-content-center">
+                        {% if correspondecias.has_previous %}
+                            <li class="page-item"><a class="page-link" href="?page=1{% if search_term %}&search={{ search_term }}{% endif %}">Primera</a></li>
+                            <li class="page-item"><a class="page-link" href="?page={{ correspondecias.previous_page_number }}{% if search_term %}&search={{ search_term }}{% endif %}">Anterior</a></li>
+                        {% endif %}
+                        {% for i in correspondecias.paginator.page_range %}
+                            {% if correspondecias.number == i %}
+                                <li class="page-item active"><a class="page-link" href="#">{{ i }} <span class="sr-only"></span></a></li>
+                            {% else %}
+                                <li class="page-item"><a class="page-link" href="?page={{ i }}{% if search_term %}&search={{ search_term }}{% endif %}">{{ i }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                        {% if correspondecias.has_next %}
+                            <li class="page-item"><a class="page-link" href="?page={{ correspondecias.next_page_number }}{% if search_term %}&search={{ search_term }}{% endif %}">Siguiente</a></li>
+                            <li class="page-item"><a class="page-link" href="?page={{ correspondecias.paginator.num_pages }}{% if search_term %}&search={{ search_term }}{% endif %}">Ultima</a></li>
+                        {% endif %}
+                    </ul>
+                {% endif %}
+
+                {% if correspondecias.paginator.num_pages > 1 %}
+                    {% if correspondecias.paginator.count >= 20 %}
+                        <p class="text-center">Seleccione cuántas correspondencias desea ver por página:</p>
+                        <div class="d-flex justify-content-center mb-3">
+                            <form method="get" action="{% url 'correspondecias' %}">
+                                <button type="submit" name="page_size" value="10" class="btn btn-primary me-2 {% if correspondecias.paginator.per_page == 10 %}active{% endif %}">10</button>
+                            </form>
+                            <form method="get" action="{% url 'correspondecias' %}">
+                                <button type="submit" name="page_size" value="20" class="btn btn-primary me-2 {% if correspondecias.paginator.per_page == 20 %}active{% endif %}">20</button>
+                            </form>
+                        </div>
+                    {% endif %}
+                    {% if correspondecias.paginator.count >= 50 %}
+                        <div class="d-flex justify-content-center mb-3">
+                            <form method="get" action="{% url 'correspondecias' %}">
+                                <button type="submit" name="page_size" value="50" class="btn btn-primary {% if correspondecias.paginator.per_page == 50 %}active{% endif %}">50</button>
+                            </form>
+                        </div>
+                    {% endif %}
+                {% endif %}
+
+                <form method="get" action="{% url 'crear_correspondencia_ext' %}">
+                    {% csrf_token %}
+                    <button class="btn btn-outline-dark btn-custom-width">
+                        Crear Correspondencia
+                    </button>
+                </form>
+
+                <br>
+
+                {% if user.usuario.userType == 'Admin' or user.usuario.userType == 'General' %}
+
+                    <form method="POST" action="{% url 'generate_excel_report_correspondencias' %}">
+                        {% csrf_token %}
+                        <button class="btn btn-outline-success btn-custom-width" type="submit">
+                            Generar Reporte
+                        </button>
+                    </form>
+
+                {% endif %}
+
+            </div>
+        </div>
+    </main>
+
+    <style>
+        .btn-custom-width {
+            width: 520px; 
+        }
+    </style>
+    
+{% endblock %}

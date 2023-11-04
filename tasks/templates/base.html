@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GESTIÓN EN RED</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css">
+
+    <style>
+
+        #sidebar {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            padding: 48px 0 0;
+            box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+            background-color: #C6C6C6 !important;
+        }
+
+        #sidebar .navbar-brand img {
+            max-width: 100px; 
+            margin-left: 15px; 
+        }
+
+        #sidebar a.nav-link {
+            color: #000000; 
+        }
+
+        main {
+            padding: 20px; 
+            margin-left: 240px; 
+        }
+
+    </style>
+</head>
+<body>
+
+    {% load static %}
+    
+    <div class="container-fluid">
+        <div class="row">
+            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
+                <div class="position-sticky">
+                    <ul class="nav flex-column">
+                        {% if user.is_authenticated %}
+                        <li class="navbar-brand">
+                            <a href="/" style="display: flex; justify-content: center;">
+                                <img src="{% static 'images/Logo1.png' %}" alt="Logo">
+                            </a>
+                        </li>
+                        {% if user.usuario.userType == 'Admin' %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'crear_usuario' %}">Crear Usuarios</a>
+                        </li>
+                        {% endif %}
+                        {% if user.usuario.userType != 'Correspondencia' %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'usuarios' %}">Usuarios</a>
+                        </li>
+                        {% endif %}
+                        {% if user.usuario.userType == 'Admin' %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/task_wizard/1">Crear Contrato</a>
+                        </li>
+                        {% endif %}
+                        {% if user.usuario.userType != 'Correspondencia' %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/tasks_completed">Contratos Terminados</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/tasks">Contratos Pendientes</a>
+                        </li>
+                        {% endif %}
+                        {% if user.usuario.userType != 'Auxiliar' and user.usuario.userType != 'Correspondencia' %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/talentohumano_wizard/1">Crear Talento Humano</a>
+                        </li>
+                        {% endif %}
+                        {% if user.usuario.userType != 'Correspondencia' %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'talentohumanos' %}">Talento Humano</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'relaciones' %}">Asignación</a>
+                        </li>
+                        {% endif %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'correspondencias' %}">Correspondencias</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/logout">Cerrar Sesión</a>
+                        </li>
+                        {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/signin">Iniciar Sesión</a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </nav>
+
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                {% block content %}
+
+                {% endblock %}
+            </main>
+        </div>
+    </div>
+
+</body>
+</html>
