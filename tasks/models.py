@@ -229,20 +229,20 @@ class TalentoHumano(models.Model):
     # Soportes 
 
     drivingLicense = models.FileField(upload_to=get_talentohumano_upload_path, max_length=254, null=True, blank=True) #Este si
-    titulos = models.FileField(upload_to=get_talentohumano_upload_path, max_length=254, null=True, blank=True)
+    titulos = models.FileField(upload_to=get_talentohumano_upload_path, max_length=254)
     disabilityCertificate = models.FileField(upload_to=get_talentohumano_upload_path, max_length=254, null=True, blank=True) #Este si
-    confidentialityCompromise = models.FileField(upload_to=get_talentohumano_upload_path, max_length=254, null=True, blank=True)
-    resume = models.FileField(upload_to=get_talentohumano_upload_path, max_length=254, null=True, blank=True)
-    idPicture = models.FileField(upload_to=get_talentohumano_upload_path, max_length=254, null=True, blank=True)
-    updatedRut = models.FileField(upload_to=get_talentohumano_upload_path, max_length=254, null=True, blank=True)
+    confidentialityCompromise = models.FileField(upload_to=get_talentohumano_upload_path, max_length=254)
+    resume = models.FileField(upload_to=get_talentohumano_upload_path, max_length=254)
+    idPicture = models.FileField(upload_to=get_talentohumano_upload_path, max_length=254)
+    updatedRut = models.FileField(upload_to=get_talentohumano_upload_path, max_length=254)
     libretaMilitar = models.FileField(upload_to=get_talentohumano_upload_path, max_length=254, null=True, blank=True) #Este si
     professionalCard = models.FileField(upload_to=get_talentohumano_upload_path, max_length=254, null=True, blank=True) #Este si
-    medicalCertificate = models.FileField(upload_to=get_talentohumano_upload_path, max_length=254, null=True, blank=True)
-    vpnCertificate = models.FileField(upload_to=get_talentohumano_upload_path, max_length=254, null=True, blank=True)
-    treatmentAuthorization = models.FileField(upload_to=get_talentohumano_upload_path, max_length=254, null=True, blank=True)
-    laborCertificate = models.FileField(upload_to=get_talentohumano_upload_path, max_length=254, null=True, blank=True)
-    sexualFormat = models.FileField(upload_to=get_talentohumano_upload_path, max_length=254, null=True, blank=True)
-    audioPhotoAuthorization = models.FileField(upload_to=get_talentohumano_upload_path, max_length=254, null=True, blank=True)
+    medicalCertificate = models.FileField(upload_to=get_talentohumano_upload_path, max_length=254)
+    vpnCertificate = models.FileField(upload_to=get_talentohumano_upload_path, max_length=254)
+    treatmentAuthorization = models.FileField(upload_to=get_talentohumano_upload_path, max_length=254)
+    laborCertificate = models.FileField(upload_to=get_talentohumano_upload_path, max_length=254)
+    sexualFormat = models.FileField(upload_to=get_talentohumano_upload_path, max_length=254)
+    audioPhotoAuthorization = models.FileField(upload_to=get_talentohumano_upload_path, max_length=254)
 
     def __str__(self):
         return self.document
