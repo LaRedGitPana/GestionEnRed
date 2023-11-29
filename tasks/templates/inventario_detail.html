@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="main container card card-body">
+    <div class="row">
+        <div class="col">
+            {% if inventario.prestado %}
+                <h2 class="text" style="color: rgb(220, 53, 69);text-align: center;">{{ inventario.name }} - {{ inventario.codigo }} - {{ inventario.marca }}</h2>
+            {% else %}
+                <h2 class="text" style="text-align: center;">{{ inventario.name }} - {{ inventario.codigo }} - {{ inventario.marca }}</h2>
+            {% endif %}
+
+            <br>
+
+            {{error}}
+
+            <form method="POST">
+                {% csrf_token %}
+
+                {% if user.usuario.userType != 'Admin' and user.usuario.userType != 'Auxiliar' %}
+
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <b>Nombre:</b>
+                            <p>{{inventario.name}}</p>
+                            <b>Cantidad:</b>
+                            <p>{{inventario.cantidad}}</p>
+                            <b>Marca:</b>
+                            <p>{{inventario.marca}}</p>
+                            <b>Fecha de Aquisición:</b>
+                            <p>{{inventario.dateAdquired}}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <b>Codigo:</b>
+                            <p>{{inventario.codigo}}</p>
+                            <b>Estado:</b>
+                            <p>{{inventario.estado}}</p>
+                            <b>Entregado a:</b>
+                            <p>{{inventario.entregadoA}}</p>
+                            <b>Fecha Inicial de Prestamo:</b>
+                            <p>{{inventario.dateTaken}}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <b>Numero Serial:</b>
+                            <p>{{inventario.serial_num}}</p>
+                            <b>Valor:</b>
+                            <p>{{inventario.valor}}</p>
+                            <b>Red o Proyecto:</b>
+                            <p>{{inventario.redProject}}</p>
+                            <b>Fecha de Retorno:</b>
+                            <p>{{inventario.dateGivenBack}}</p>
+                        </div>
+                        <div class="col-md-12">
+                            <b>Descripción:</b>
+                            <pre style="font-family: inherit; font-size: inherit; white-space: pre-wrap; word-wrap: break-word; overflow: hidden;">{{inventario.descripcion}}</pre>
+                            <b>Caracteristicas:</b>
+                            <pre style="font-family: inherit; font-size: inherit; white-space: pre-wrap; word-wrap: break-word; overflow: hidden;">{{inventario.caracteristicas}}</pre>
+                        </div>
+                    </div>
+                </div>
+                
+                {% else %}
+
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <b>Nombre:</b>
+                            <p>{{form.name}}</p>
+                            <b>Cantidad:</b>
+                            <p>{{form.cantidad}}</p>
+                            <b>Marca:</b>
+                            <p>{{form.marca}}</p>
+                            <b>Fecha de Aquisición:</b>
+                            <p>{{form.dateAdquired}}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <b>Codigo:</b>
+                            <p>{{form.codigo}}</p>
+                            <b>Estado:</b>
+                            <p>{{form.estado}}</p>
+                            <b>Entregado a:</b>
+                            <p>{{form.entregadoA}}</p>
+                            <b>Fecha Inicial de Prestamo:</b>
+                            <p>{{form.dateTaken}}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <b>Numero Serial:</b>
+                            <p>{{form.serial_num}}</p>
+                            <b>Valor:</b>
+                            <p>{{form.valor}}</p>
+                            <b>Red o Proyecto:</b>
+                            <p>{{form.redProject}}</p>
+                            <b>Fecha de Retorno:</b>
+                            <p>{{form.dateGivenBack}}</p>
+                        </div>
+                        <div class="col-md-12">
+                            <b>Descripción:</b>
+                            <p>{{form.descripcion}}</p>
+                            <b>Caracteristicas:</b>
+                            <p>{{form.caracteristicas}}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {% endif %}
+
+                <div class="row text-center">
+                    <div class="col">
+                        {% if user.usuario.userType != 'Admin' and user.usuario.userType != 'Auxiliar' %}
+                        <button class="btn btn-outline-dark btn-block btn-custom-width">
+                            Aceptar
+                        </button>
+                        {% else %}
+                        <button class="btn btn-outline-dark btn-block btn-custom-width">
+                            Actualizar Inventario
+                        </button>
+                        {% endif %}
+                    </div>
+                </div>
+
+            </form>
+
+            <div class="col text-center">
+                {% if user.usuario.userType == 'Admin' or user.usuario.userType == 'Auxiliar' %}
+
+                <br>
+
+                <form id="delete-form" action="{% url 'delete_inventario' inventario.id %}" method="POST">
+                    {% csrf_token %}
+                    <button class="btn btn-outline-danger btn-block btn-custom-width" id="delete-btn">
+                        Eliminar Inventario
+                    </button>
+                </form>
+                {% endif %}
+            </div>
+
+            {% if observaciones %}
+            <br>
+            <div class="observaciones-section text">
+                <h2 class="text-center" style="color: #BA0F15;">OBSERVACIONES</h2>
+                <ul class="observaciones-list">
+                    {% for observacion in observaciones %}
+                        <li class="observacion">
+                            <div class="observacion-metadata">
+                                <p><b>Responsable:</b>
+                                    {{observacion.entregadoA}}
+                                </p>
+                                <p style="color: rgb(121, 121, 121); font-size: small;">
+                                    <b>Entre las fechas:</b> {{ observacion.dateTaken}} a {{ observacion.dateGivenBack }}
+                                </p>
+                                <p style="color: rgb(121, 121, 121); font-size: small;">{{ observacion.observacion }}</p>
+                                {% if observacion.observacion %}
+
+                                {% else %}
+                                    <form action="{% url 'view_observacion' observacion.id %}" method="GET">
+                                        <button type="submit" class="btn btn-outline-primary btn-custom-width">
+                                            Agregar Observación
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        </li>
+                        <hr>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+            
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.getElementById('delete-btn').addEventListener('click', function(event) {
+        event.preventDefault();
+        Swal.fire({
+            title: 'Mensaje de confirmación de eliminación',
+            text: '¿Está seguro de que desea eliminar este inventario identificado con el codigo {{ inventario.codigo }}?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('delete-form').submit();
+            }
+        });
+    });
+</script>
+
+<style>
+    .btn-custom-width {
+        width: 1020px; 
+    }
+</style>
+
+{% endblock %}

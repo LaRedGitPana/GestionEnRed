@@ -142,13 +142,11 @@
                 {% endif %}
 
                 {% if talentohumanos %}
-                <h4 class="text-center"> Talento Humano asignado: </h4>
-                <ul class="text-center">
-                    {% for talentohumano in talentohumanos %}
-                    <a href="{% url 'talentohumano_detail' talentohumano.id %}">{{ talentohumano.nombreCompleto }}</a>
+                    <div class="col text-center">
+                        <a href="{% url 'talentohumano_list' task.id %}" class="btn btn-outline-primary btn-custom-width">Talento Humano Asignado</a>
+                    </div>
+    
                     <br>
-                    {% endfor %}
-                </ul>
                 {% endif %}
 
                 <div class="col text-center">

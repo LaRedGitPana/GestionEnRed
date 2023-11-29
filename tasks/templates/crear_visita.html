@@ -1,0 +1,790 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <main class="container">
+        <div class="row">
+            <div class="col">
+                
+                <form method="POST" class="card card-body">
+
+                    <h2 style="text-align: center;">INSPECCIÓN LOCATIVA</h2>
+
+                    {% if form.errors %}
+                        <div class="alert alert-danger">
+                            {{ form.errors }}
+                        </div>
+                    {% endif %}
+    
+                    {% csrf_token %}
+
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-6 text-center">
+                                <b>Fecha de la Inspección:</b>
+                                <p>{{form.date}}</p>
+                            </div>
+                            <div class="col-md-6 text-center">
+                                <b>Hora de la Inspección:</b>
+                                <p>{{form.hora}}</p>
+                            </div>
+
+                            <h3 class="text-center" style="color: #BA0F15;">PELIGROS FÍSICOS</h3>
+
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Campos</th>
+                                        <th class="text-center">Observaciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <b>1.1.</b> Existe buena iluminación artificial y natural.
+                                            {{form.campo_1_1}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 1.1:</b>
+                                            {{form.observacion_1_1}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>1.2.</b> Las iluminarias están en buen estado.
+                                            {{form.campo_1_2}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 1.2:</b>
+                                            {{form.observacion_1_2}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>1.3.</b> Las persianas, cortinas o protección de vidrios están en buen estado.
+                                            {{form.campo_1_3}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 1.3:</b>
+                                            {{form.observacion_1_3}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>1.4.</b> Hay buena ventilación en el área.
+                                            {{form.campo_1_4}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 1.4:</b>
+                                            {{form.observacion_1_4}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>1.5.</b> El nivel de ruido es adecuado (condiciones normales inferiores a 85 db).
+                                            {{form.campo_1_5}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 1.5:</b>
+                                            {{form.observacion_1_5}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>1.6.</b> Existen controles de ruido (control en la fuente, en el medio de propagación, en el trabajor).
+                                            {{form.campo_1_6}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 1.6:</b>
+                                            {{form.observacion_1_6}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>1.7.</b> La temperatura es confortable.
+                                            {{form.campo_1_7}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 1.7:</b>
+                                            {{form.observacion_1_7}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <h3 class="text-center" style="color: #BA0F15;">PELIGROS LOCATIVOS</h3>
+
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <b>2.1.</b> Los muros están en buen estado (sin grietas, sin humedad, pintura buen estado).
+                                            {{form.campo_2_1}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 2.1:</b>
+                                            {{form.observacion_2_1}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>2.2.</b> Escaleras en buen estado (paso manos, antideslizantes).
+                                            {{form.campo_2_2}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 2.2:</b>
+                                            {{form.observacion_2_2}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>2.3.</b> Pisos en buen estado.
+                                            {{form.campo_2_3}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 2.3:</b>
+                                            {{form.observacion_2_3}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>2.4.</b> Ventanas, puertas en buen estado (manijas, chapas).
+                                            {{form.campo_2_4}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 2.4:</b>
+                                            {{form.observacion_2_4}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>2.5.</b> Techos en buen estado (sin goteras).
+                                            {{form.campo_2_5}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 2.5:</b>
+                                            {{form.observacion_2_5}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>2.6.</b> Áreas de circulación despejadas (escaleras, zonas de tránsito en almacén, etc.).
+                                            {{form.campo_2_6}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 2.6:</b>
+                                            {{form.observacion_2_6}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>2.7.</b> Están claramente demarcadas las áreas de trabajo y rutas de tránsito.
+                                            {{form.campo_2_7}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 2.7:</b>
+                                            {{form.observacion_2_7}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>2.8.</b> En general, ¿se observan las sillas en buen estado?
+                                            {{form.campo_2_8}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 2.8:</b>
+                                            {{form.observacion_2_8}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>2.9.</b> Las divisiones módulares, escritorios y cajones se encuentran en buenas condiciones.
+                                            {{form.campo_2_9}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 2.9:</b>
+                                            {{form.observacion_2_9}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <h3 class="text-center" style="color: #BA0F15;">PELIGROS ELÉCTRICOS</h3>
+
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <b>3.1.</b> Cables eléctricos debidamente entubados.
+                                            {{form.campo_3_1}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 3.1:</b>
+                                            {{form.observacion_3_1}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>3.2.</b> Los empalmes o conexiones están en buen estado.
+                                            {{form.campo_3_2}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 3.2:</b>
+                                            {{form.observacion_3_2}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>3.3.</b> Tomas e interruptores en buen estado.
+                                            {{form.campo_3_3}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 3.3:</b>
+                                            {{form.observacion_3_3}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>3.4.</b> Se observa cajas o toma corrientes sin sobrecarga.
+                                            {{form.campo_3_4}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 3.4:</b>
+                                            {{form.observacion_3_4}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>3.5.</b> Cables en buen estado.
+                                            {{form.campo_3_5}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 3.5:</b>
+                                            {{form.observacion_3_5}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>3.6.</b> Los tableros, cajas y circuitos están identificados.
+                                            {{form.campo_3_6}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 3.6:</b>
+                                            {{form.observacion_3_6}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>3.7.</b> Los tableros y cajas están libres de obstáculos.
+                                            {{form.campo_3_7}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 3.7:</b>
+                                            {{form.observacion_3_7}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>3.8.</b> Existe señalización de peligros.
+                                            {{form.campo_3_8}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 3.8:</b>
+                                            {{form.observacion_3_8}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <h3 class="text-center" style="color: #BA0F15;">PELIGROS DE SEGURIDAD</h3>
+
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <b>4.1.</b> Los extintores son los adecuados al tipo de peligros del área.
+                                            {{form.campo_4_1}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 4.1:</b>
+                                            {{form.observacion_4_1}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>4.2.</b> Extintores de carga vigentes.
+                                            {{form.campo_4_2}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 4.2:</b>
+                                            {{form.observacion_4_2}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>4.3.</b> Extintores libres de obstáculos.
+                                            {{form.campo_4_3}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 4.3:</b>
+                                            {{form.observacion_4_3}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>4.4.</b> Existe señalización de extintores.
+                                            {{form.campo_4_4}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 4.4:</b>
+                                            {{form.observacion_4_4}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>4.5.</b> Existe señalización en todas las instalaciones y en las salidas de emergencia.
+                                            {{form.campo_4_5}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 4.5:</b>
+                                            {{form.observacion_4_5}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>4.6.</b> Las áreas de salida de emergencia y puntos de encuentro se encuentran despejadas.
+                                            {{form.campo_4_6}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 4.6:</b>
+                                            {{form.observacion_4_6}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>4.7.</b> El personal cuenta con los elementos de protección personal (EPP).
+                                            {{form.campo_4_7}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 4.7:</b>
+                                            {{form.observacion_4_7}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>4.8.</b> Hay camilla en el área (solo si es necesaria).
+                                            {{form.campo_4_8}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 4.8:</b>
+                                            {{form.observacion_4_8}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>4.9.</b> Hay botiquín disponible en el área.
+                                            {{form.campo_4_9}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 4.9:</b>
+                                            {{form.observacion_4_9}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>4.10.</b> ¿Se encuentra visible la lista de teléfonos de emergencias?
+                                            {{form.campo_4_10}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 4.10:</b>
+                                            {{form.observacion_4_10}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>4.11.</b> ¿Se cuenta con la lista de centros de salud u hospitales de referencia cercanos?
+                                            {{form.campo_4_11}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 4.11:</b>
+                                            {{form.observacion_4_11}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <h3 class="text-center" style="color: #BA0F15;">PELIGROS BIOLÓGICOS</h3>
+
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <b>5.1.</b> El área está libre de insectos y roedores.
+                                            {{form.campo_5_1}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 5.1:</b>
+                                            {{form.observacion_5_1}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <h3 class="text-center" style="color: #BA0F15;">PELIGROS BIOMECÁNICOS</h3>
+
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <b>6.1.</b> Espacio de trabajo adecuado (para miembros inferiores, desplazamientos y salidas de puesto de trabajo).
+                                            {{form.campo_6_1}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 6.1:</b>
+                                            {{form.observacion_6_1}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>6.2.</b> Silla en buenas condiciones, espaldar, asiento, patas o base.
+                                            {{form.campo_6_2}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 6.2:</b>
+                                            {{form.observacion_6_2}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>6.3.</b> Altura adecuada de la pantalla del computador respecto a la horizontal (el borde superior de la pantalla se encuentra a la misma altura de los ojos del trabajador).
+                                            {{form.campo_6_3}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 6.3:</b>
+                                            {{form.observacion_6_3}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>6.4.</b> El peso de los objetos que levanta o almacena están dentro de los limites permisibles.
+                                            {{form.campo_6_4}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 6.4:</b>
+                                            {{form.observacion_6_4}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <h3 class="text-center" style="color: #BA0F15;">ORDEN Y ASEO</h3>
+
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <b>7.1.</b> El área se encuentra organizada.
+                                            {{form.campo_7_1}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 7.1:</b>
+                                            {{form.observacion_7_1}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>7.2.</b> Se realiza la clasificación de residuos sólidos en forma correcta.
+                                            {{form.campo_7_2}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 7.2:</b>
+                                            {{form.observacion_7_2}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>7.3.</b> Los residuos peligrosos se separan y disponen con empresas autorizadas.
+                                            {{form.campo_7_3}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 7.3:</b>
+                                            {{form.observacion_7_3}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>7.4.</b> El sitio inspeccionado se encuentra en buen estado de aseo y mantenimiento.
+                                            {{form.campo_7_4}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 7.4:</b>
+                                            {{form.observacion_7_4}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <h3 class="text-center" style="color: #BA0F15;">SANEAMIENTO BÁSICO</h3>
+
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <b>8.1.</b> Servicios higiénicos en buen estado y limpieza.
+                                            {{form.campo_8_1}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 8.1:</b>
+                                            {{form.observacion_8_1}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>8.2.</b> Luminarias de baños en buen estado.
+                                            {{form.campo_8_2}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 8.2:</b>
+                                            {{form.observacion_8_2}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>8.3.</b> Hay papel higiénico, jabón, toallas y papeleras con pedal y tapa.
+                                            {{form.campo_8_3}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 8.3:</b>
+                                            {{form.observacion_8_3}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>8.4.</b> Están los inodoros limpios y en buen estado.
+                                            {{form.campo_8_4}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 8.4:</b>
+                                            {{form.observacion_8_4}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>8.5.</b> Se tienen reguladores o ahorradores de agua en los lavamanos y sanitarios.
+                                            {{form.campo_8_5}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 8.5:</b>
+                                            {{form.observacion_8_5}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <h3 class="text-center" style="color: #BA0F15;">PELIGROS MECÁNICOS</h3>
+
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <b>9.1.</b> Equipos y herramientas de oficina en buen estado.
+                                            {{form.campo_9_1}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 9.1:</b>
+                                            {{form.observacion_9_1}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>9.2.</b> Archivadores en buen estado.
+                                            {{form.campo_9_2}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 9.2:</b>
+                                            {{form.observacion_9_2}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <h3 class="text-center" style="color: #BA0F15;">PREGUNTAS Y OBSERVACIONES DE TAREAS</h3>
+
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <b>10.1.</b> Los colaboradores cumplen con las normas de seguridad de su actividad.
+                                            {{form.campo_10_1}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 10.1:</b>
+                                            {{form.observacion_10_1}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>10.2.</b> Los colaboradores conocen los peligros a los que están expuestos.
+                                            {{form.campo_10_2}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 10.2:</b>
+                                            {{form.observacion_10_2}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>10.3.</b> El personal tiene claro que hacer en caso de un incidente, accidente de trabajo y enfermedad laboral.
+                                            {{form.campo_10_3}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 10.3:</b>
+                                            {{form.observacion_10_3}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>10.4.</b> Los colaboradores conocen la politica de seguridad y salud en el trabajo.
+                                            {{form.campo_10_4}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 10.4:</b>
+                                            {{form.observacion_10_4}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>10.5.</b> Los colaboradores saben como usar y cuidar sus EPP.
+                                            {{form.campo_10_5}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 10.5:</b>
+                                            {{form.observacion_10_5}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <h3 class="text-center" style="color: #BA0F15;">MEDIO AMBIENTE</h3>
+
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <b>11.1.</b> ¿Está en buenas condiciones el Horno microondas? (Si aplica).
+                                            {{form.campo_11_1}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 11.1:</b>
+                                            {{form.observacion_11_1}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>11.2.</b> ¿Está en buenas condiciones la nevera? (Si aplica).
+                                            {{form.campo_11_2}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 11.2:</b>
+                                            {{form.observacion_11_2}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>11.3.</b> ¿Está en buenas condiciones la cafetera? (Si aplica).
+                                            {{form.campo_11_3}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 11.3:</b>
+                                            {{form.observacion_11_3}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>11.4.</b> ¿Está en buenas condiciones el aire acondicionado? (Si aplica).
+                                            {{form.campo_11_4}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 11.4:</b>
+                                            {{form.observacion_11_4}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>11.5.</b> ¿Está en buenas condiciones la impresora/fotocopiadora? (Si aplica).
+                                            {{form.campo_11_5}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 11.5:</b>
+                                            {{form.observacion_11_5}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>11.6.</b> ¿Está en buenas condiciones el computador? (Si aplica).
+                                            {{form.campo_11_6}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 11.6:</b>
+                                            {{form.observacion_11_6}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>11.7.</b> Otro.
+                                            {{form.campo_11_7}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 11.7:</b>
+                                            {{form.observacion_11_7}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>11.8.</b> ¿Los productos quimicos están almacenados adecuadamente?
+                                            {{form.campo_11_8}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 11.8:</b>
+                                            {{form.observacion_11_8}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>11.9.</b> ¿En el área se tienen disponibles las hojas de seguridad?
+                                            {{form.campo_11_9}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 11.9:</b>
+                                            {{form.observacion_11_9}}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>11.10.</b> Otro.
+                                            {{form.campo_11_10}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 11.10:</b>
+                                            {{form.observacion_11_10}}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="col-md-12">
+                                <b>Observación General:</b>
+                                <p>{{form.observacionGeneral}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-outline-primary">
+                        Guardar
+                    </button>
+                </form>
+
+            </div>
+        </div>
+    </main>
+
+{% endblock %}

@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <main class="container">
+        <div class="row">
+            <div class="col">
+                
+                <form method="POST" class="card card-body">
+
+                    <h2 style="text-align: center;">Crear Inventario</h2>
+
+                    {{error}}
+    
+                    {% csrf_token %}
+
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <b>Nombre:</b>
+                                <p>{{form.name}}</p>
+                                <b>Cantidad:</b>
+                                <p>{{form.cantidad}}</p>
+                                <b>Marca:</b>
+                                <p>{{form.marca}}</p>
+                            </div>
+                            <div class="col-md-4">
+                                <b>Codigo:</b>
+                                <p>{{form.codigo}}</p>
+                                <b>Estado:</b>
+                                <p>{{form.estado}}</p>
+                            </div>
+                            <div class="col-md-4">
+                                <b>Numero Serial:</b>
+                                <p>{{form.serial_num}}</p>
+                                <b>Valor:</b>
+                                <p>{{form.valor}}</p>
+                                <b>Fecha de Aquisición:</b>
+                                <p>{{form.dateAdquired}}</p>
+                            </div>
+                            <div class="col-md-12">
+                                <b>Descripción:</b>
+                                <p>{{form.descripcion}}</p>
+                                <b>Caracteristicas:</b>
+                                <p>{{form.caracteristicas}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-outline-primary">
+                        Guardar
+                    </button>
+                </form>
+
+            </div>
+        </div>
+    </main>
+    
+{% endblock %}

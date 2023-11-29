@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login, logout, authenticate, update_session_auth_hash
-from .forms import TaskForm, TaskFormPart1, TaskFormPart2, TaskFormPart3, UsuarioForm, CustomPasswordForm, TalentoHumanoForm, TalentoHumanoFormPart1, TalentoHumanoFormPart2, TalentoHumanoFormPart3, TalentoHumanoFormPart4, TalentoHumanoAsignacionForm, RelacionTHCForm, ComentarioForm, UsuarioEditForm, UserEditForm, ArchivoForm, CorrespondeciaForm, AdminEditForm
-from .models import Task, Usuario, TalentoHumano, RelacionTHC, Comentario, Archivo, Correspondencia
+from .forms import TaskForm, TaskFormPart1, TaskFormPart2, TaskFormPart3, UsuarioForm, CustomPasswordForm, TalentoHumanoForm, TalentoHumanoFormPart1, TalentoHumanoFormPart2, TalentoHumanoFormPart3, TalentoHumanoFormPart4, TalentoHumanoAsignacionForm, RelacionTHCForm, ComentarioForm, UsuarioEditForm, UserEditForm, ArchivoForm, CorrespondeciaForm, AdminEditForm, InventarioForm, ObservacionForm, SedeForm, FotoForm, VisitaForm
+from .models import Task, Usuario, TalentoHumano, RelacionTHC, Comentario, Archivo, Correspondencia, Inventario, Observacion, Sede, Foto, Visita
 from decimal import Decimal
 from datetime import datetime
 from django.utils import timezone
@@ -22,8 +22,9 @@ from openpyxl import Workbook
 from django.http import HttpResponse
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from django.db.models import Max
-
-# Create your views here.
+from django.db import IntegrityError
+from openpyxl.styles import NamedStyle, Font
+from openpyxl.utils import get_column_letter
 
 @login_required
 def home(request): 
@@ -258,6 +259,31 @@ def task_wizard(request, step=1):
         })
 
 @login_required
+def talentohumano_list(request, task_id):
+
+    if request.user.usuario.userType == 'Correspondencia':
+        return redirect('correspondencias')
+
+    task = Task.objects.get(pk=task_id)
+    talentohumanos = TalentoHumano.objects.filter(tasks=task)
+    search_term = request.GET.get('search')
+
+    if search_term:
+        talentohumanos = talentohumanos.filter(
+            Q(document__icontains=search_term) | 
+            Q(firstName__icontains=search_term) |
+            Q(secondName__icontains=search_term) |
+            Q(firstLastname__icontains=search_term) |
+            Q(secondLastname__icontains=search_term)  
+        )
+
+    return render(request, 'talentohumano_list.html', {
+        'talentohumanos': talentohumanos,
+        'task': task,
+        'search_term': search_term
+        })
+
+@login_required
 def crear_user(request):
 
     if request.user.usuario.userType == 'Correspondencia':
@@ -266,10 +292,11 @@ def crear_user(request):
     if request.user.usuario.userType != 'Admin':
         return redirect('usuarios')
     
+    error = None
+
     if request.method == 'POST':
         form = UsuarioForm(request.POST)
         if form.is_valid():
-            
             user = User.objects.create_user(
                 username=form.cleaned_data['username'],
                 password=form.cleaned_data['password1'],
@@ -277,7 +304,7 @@ def crear_user(request):
                 last_name=form.cleaned_data['last_name']
             )
 
-            
+                
             usuario = Usuario(
                 user=user,
                 document=form.cleaned_data['document'],
@@ -292,7 +319,7 @@ def crear_user(request):
         form = UsuarioForm()
 
     context = {
-        'form': form,
+        'form': form
     }
 
     return render(request, 'crear_usuario.html', context)
@@ -328,7 +355,6 @@ def usuarios(request):
         'search_term': search_term,
     })
 
-
 @login_required
 def delete_usuario(request, usuario_id):
 
@@ -349,47 +375,82 @@ def delete_usuario(request, usuario_id):
 
 @login_required
 def usuario_detail(request, usuario_id): 
-
     if request.user.usuario.userType == 'Correspondencia':
         return redirect('correspondencias')
 
     usuario = get_object_or_404(Usuario, pk=usuario_id)
-    
+
     if request.method == 'POST':
 
-        if request.user.usuario.userType != 'Admin':
-            return redirect('usuarios')
-        
-        usuario_form = UsuarioEditForm(request.POST, instance=usuario)
-        user_form = UserEditForm(request.POST, instance=usuario.user)
-        admin_form = AdminEditForm(request.POST, instance=usuario)
+        if request.user.usuario.userType == 'Admin':
+            admin_form = AdminEditForm(request.POST, instance=usuario)
+            if admin_form.is_valid():
+                user_instance = usuario.user
+                password1 = admin_form.cleaned_data['password1']
+                password2 = admin_form.cleaned_data['password2']
 
-        if usuario_form.is_valid() and user_form.is_valid() and admin_form.is_valid():
-            if request.user.usuario.userType == 'Admin' and admin_form.cleaned_data.get('password1') != admin_form.cleaned_data.get('password2'):
-                error = "Las contraseñas no son iguales, por favor vuelva a intentarlo."
+                if password1 != password2:
+                    error = "Las contraseñas no coinciden. Por favor, inténtelo de nuevo."
+                    return render(request, 'usuario_detail.html', {
+                        'usuario': usuario,
+                        'admin_form': admin_form,
+                        'error': error
+                    })
+
+                if password1:
+                    user_instance.set_password(password1)
+                    user_instance.save()
+                    update_session_auth_hash(request, user_instance)  # Important to keep the user logged in
+
+                usuario = admin_form.save()
+                return redirect('usuarios')
+
+            else:
+                error = "Ha ocurrido un error. Por favor, vuelva a intentarlo."
                 return render(request, 'usuario_detail.html', {
+                    'usuario': usuario,
+                    'admin_form': admin_form,
+                    'error': error
+        })
+        else:
+            usuario_form = UsuarioEditForm(request.POST, instance=usuario)
+            user_form = UserEditForm(request.POST, instance=usuario.user)
+
+            if usuario_form.is_valid() and user_form.is_valid():
+                usuario_form.save()
+                user_form.save()
+                return redirect('usuarios')
+            else:
+                error = "Ha ocurrido un error. Por favor, vuelva a intentarlo."
+                return render(request, 'usuario_detail.html', {
+                    'usuario': usuario,
+                    'usuario_form': usuario_form,
+                    'user_form': user_form,
+                    'error': error
+                })
+    else:
+        if request.user.usuario.userType == 'Admin' and request.user.usuario.id == usuario_id:
+            usuario_form = UsuarioEditForm(instance=usuario)
+            user_form = UserEditForm(instance=usuario.user)
+            return render(request, 'usuario_detail.html', {
                 'usuario': usuario,
                 'usuario_form': usuario_form,
-                'user_form': user_form,
-                'admin_form': admin_form,
-                'error': error
-                })
+                'user_form': user_form
+            })
+        elif request.user.usuario.userType == 'Admin':
+            admin_form = AdminEditForm(instance=usuario)
+            return render(request, 'usuario_detail.html', {
+                'usuario': usuario,
+                'admin_form': admin_form
+            })
         else:
-            usuario_form.save()
-            user_form.save()
-            admin_form.save()
-            return redirect('usuarios')
-    else:
-        usuario_form = UsuarioEditForm(instance=usuario)
-        user_form = UserEditForm(instance=usuario.user)
-        admin_form = AdminEditForm(instance=usuario)
-
-    return render(request, 'usuario_detail.html', {
-        'usuario': usuario,
-        'usuario_form': usuario_form,
-        'user_form': user_form,
-        'admin_form': admin_form
-    })
+            usuario_form = UsuarioEditForm(instance=usuario)
+            user_form = UserEditForm(instance=usuario.user)
+            return render(request, 'usuario_detail.html', {
+                'usuario': usuario,
+                'usuario_form': usuario_form,
+                'user_form': user_form
+            })
 
 @login_required
 def password_change(request, usuario_id):
@@ -400,6 +461,7 @@ def password_change(request, usuario_id):
     usuario = get_object_or_404(Usuario, pk=usuario_id)
 
     if request.method == 'POST':
+        
         if request.user.usuario.userType != 'Admin':
             return redirect('usuarios')
         
@@ -572,7 +634,6 @@ def talentohumano_detail(request, talentohumano_id):
             'talentohumano': talentohumano,
             'form': form,
             'tasks': tasks,
-            'comentarios': comentarios,
             'error': 'Ocurrio un error actualizando este talento humano'
         })
 
@@ -592,24 +653,33 @@ def asignacion(request, task_id):
         if form.is_valid():
             selected_talentohumanos = form.cleaned_data['talentohumanos']
             for talentohumano in selected_talentohumanos:
-                relacion = RelacionTHC.objects.create(
-                    talentoHumano = talentohumano,
-                    task = task,
-                    contractType = None,
-                    modalidad = None,
-                    cargo = None,
-                    jornada = None,
-                    startDate = None,
-                    endDate = None,
-                    monthlySalary = None,
-                    totalSalary = None,
-                    functions = None,
-                    contractsObject = None,
-                    lugarPrestacionServicios = None,
-                    departamentoPrestacionServicios = None,
-                    paymentMethod = None
-                )
+                try:
+                    relacion = RelacionTHC.objects.create(
+                        talentoHumano = talentohumano,
+                        task = task,
+                        contractType = None,
+                        modalidad = None,
+                        cargo = None,
+                        jornada = None,
+                        startDate = None,
+                        endDate = None,
+                        monthlySalary = None,
+                        totalSalary = None,
+                        functions = None,
+                        contractsObject = None,
+                        lugarPrestacionServicios = None,
+                        departamentoPrestacionServicios = None,
+                        paymentMethod = None
+                    )
 
+                except IntegrityError:
+                    error = "Un empleado no se puede asignar mas de una vez a el mismo contrato, por favor vuelva a intentarlo"
+                    return render(request, 'asignacion.html', {
+                        'form': form,
+                        'task': task,
+                        'error': error
+                    })
+                
             if task.datecompleted is not None:
                 return redirect('tasks_completed')
             else:
@@ -621,6 +691,8 @@ def asignacion(request, task_id):
             'form': form,
             'task': task
         })
+    
+    return HttpResponse("Ha ocurrido un error")
     
 @login_required
 def relaciones(request):
@@ -804,7 +876,7 @@ def generate_excel_report_tasks(request):
     wb = Workbook()
     ws = wb.active
 
-    headers = ["Documento", "Año", "Tipo de Contrato", "Nombre de Contrato", "Salario Minimo", "Valor Contrato en SMMLV", "Aporte Contratante", "Aporte ONG La Red", "Valor Total", "Fecha de Inicio", "Fecha de Terminación", "Duración (Meses)", "Duración (Dias)", "Secop", "Rup", "Contratante", "Departamentos", "Municipios", "Tema", "Objeto", "Indicadores de Resultados"]
+    headers = ["Documento", "Año", "Tipo de Contrato", "Nombre de Contrato", "Salario Minimo", "Valor Contrato en SMMLV", "Aporte Contratante", "Aporte ONG La Red", "Valor Total", "Fecha de Inicio", "Fecha de Terminación", "Duración (Meses)", "Duración (Dias)", "Secop", "Rup", "Contratante", "Departamentos", "Municipios", "Tema", "Objeto"]
     ws.append(headers)
 
     header = ws[1]
@@ -822,13 +894,36 @@ def generate_excel_report_tasks(request):
 
 
     for task in tasks:
-        row = [task.document, task.year, task.contractType, task.nombre, task.minimumSalary, task.contractValueSMMLV, task.contractorsBudget, task.redsBudget, task.totalValue, task.startDate.strftime('%d-%m-%Y'), task.endDate.strftime('%d-%m-%Y'), task.durationMonths, task.durationDays, task.secop, task.rup, task.contractor, task.departments, task.municipalities, task.topic, task.object, task.resultsIndicator]
+        row = [task.document, task.year, task.contractType, task.nombre, task.minimumSalary, task.contractValueSMMLV, task.contractorsBudget, task.redsBudget, task.totalValue, task.startDate.strftime('%d-%m-%Y'), task.endDate.strftime('%d-%m-%Y'), task.durationMonths, task.durationDays, task.secop, task.rup, task.contractor, task.departments, task.municipalities, task.topic, task.object]
         ws.append(row)
 
     for row in ws.iter_rows(min_row=2):
         for cell in row:
             cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
             cell.border = thin_border
+
+    currency_style = NamedStyle(name='currency', number_format='_("$"* #,##0.00_);_("$"* \(#,##0.00\);_("$"* "-"_);_(@_)')
+
+    currency_columns = ["Salario Minimo", "Valor Contrato en SMMLV", "Aporte Contratante", "Aporte ONG La Red", "Valor Total"]
+    for col_name in currency_columns:
+        col_index = headers.index(col_name) + 1  
+        col_letter = get_column_letter(col_index)
+        
+        for cell in ws[col_letter]:
+            cell.style = currency_style
+            cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+            cell.border = thin_border
+
+    for col_name in currency_columns:
+        col_index = headers.index(col_name) + 1
+        col_letter = get_column_letter(col_index)
+        header_cell = ws[f"{col_letter}1"]
+
+        header_cell.font = Font(bold=True)
+        header_cell.fill = PatternFill(start_color="FFFF00", end_color="FFFF00", fill_type="solid")
+        header_cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+        header_cell.border = thin_border
+        ws.column_dimensions[col_letter].width = max(len(header_cell.value), 15)
 
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename=reporte_contratos.xlsx'
@@ -875,6 +970,29 @@ def generate__excel_report_talentohumanos(request):
         for cell in row:
             cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
             cell.border = thin_border
+
+    currency_style = NamedStyle(name='currency', number_format='_("$"* #,##0.00_);_("$"* \(#,##0.00\);_("$"* "-"_);_(@_)')
+
+    currency_columns = ["Salario Mensual", "Salario Total"]
+    for col_name in currency_columns:
+        col_index = headers.index(col_name) + 1  
+        col_letter = get_column_letter(col_index)
+        
+        for cell in ws[col_letter]:
+            cell.style = currency_style
+            cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+            cell.border = thin_border
+
+    for col_name in currency_columns:
+        col_index = headers.index(col_name) + 1
+        col_letter = get_column_letter(col_index)
+        header_cell = ws[f"{col_letter}1"]
+
+        header_cell.font = Font(bold=True)
+        header_cell.fill = PatternFill(start_color="FFFF00", end_color="FFFF00", fill_type="solid")
+        header_cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+        header_cell.border = thin_border
+        ws.column_dimensions[col_letter].width = max(len(header_cell.value), 15)
 
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
     response['Content-Disposition'] = 'attachment; filename=reporte_talentohumano.xlsx'
@@ -1121,3 +1239,641 @@ def generate__excel_report_correspondencias(request):
     wb.save(response)
 
     return response
+
+@login_required    
+def inventarios(request):
+
+    if request.user.usuario.userType == 'Correspondencia':
+        return redirect('correspondencias')
+    
+    if request.user.usuario.userType == 'General':
+        return redirect('home')
+    
+    return render(request, 'inventarios.html')
+
+@login_required
+def crear_inventario(request):
+
+    if request.user.usuario.userType == 'Correspondencia':
+        return redirect('correspondencias')
+    
+    if request.user.usuario.userType == 'General':
+        return redirect('inventarios')
+    
+    if request.method == 'POST':
+        form = InventarioForm(request.POST)
+        if form.is_valid():
+            inventario = form.save(commit=False)
+            inventario.prestado = False  
+            inventario.save()
+            return redirect('inventarios')
+    
+    else:
+        form = InventarioForm()
+    return render(request, 'crear_inventario.html', {
+        'form': form
+    })
+
+@login_required
+def inventario_total(request):
+
+    if request.user.usuario.userType == 'Correspondencia':
+        return redirect('correspondencias')
+    
+    if request.user.usuario.userType == 'General':
+        return redirect('home')
+    
+    search_term = request.GET.get('search')
+    inventarios = Inventario.objects.all().order_by('dateAdquired')
+
+    if search_term:
+        inventarios = inventarios.filter(
+            Q(codigo__icontains=search_term) | 
+            Q(marca__icontains=search_term) | 
+            Q(entregadoA__icontains=search_term)
+        )
+
+    page_size = int(request.GET.get('page_size', 10))
+    paginator = Paginator(inventarios, page_size)
+    page = request.GET.get('page')
+    
+    try: 
+        inventarios = paginator.page(page)
+    except PageNotAnInteger:
+        inventarios = paginator.page(1)
+    except EmptyPage:
+        inventarios = paginator.page(paginator.num_pages)
+
+    return render(request, 'inventario_total.html', {
+        'inventarios':inventarios,
+        'search_term': search_term
+    })
+
+@login_required
+def inventario_disponible(request):
+
+    if request.user.usuario.userType == 'Correspondencia':
+        return redirect('correspondencias')
+    
+    if request.user.usuario.userType == 'General':
+        return redirect('home')
+    
+    search_term = request.GET.get('search')
+    inventarios = Inventario.objects.filter(prestado=False).order_by('dateAdquired')
+
+    if search_term:
+        inventarios = inventarios.filter(
+            Q(codigo__icontains=search_term) | 
+            Q(marca__icontains=search_term) | 
+            Q(entregadoA__icontains=search_term)
+        )
+
+    page_size = int(request.GET.get('page_size', 10))
+    paginator = Paginator(inventarios, page_size)
+    page = request.GET.get('page')
+    
+    try: 
+        inventarios = paginator.page(page)
+    except PageNotAnInteger:
+        inventarios = paginator.page(1)
+    except EmptyPage:
+        inventarios = paginator.page(paginator.num_pages)
+
+    return render(request, 'inventario_disponible.html', {
+        'inventarios': inventarios,
+        'search_term': search_term
+    })
+
+@login_required
+def inventario_pendiente(request):
+
+    if request.user.usuario.userType == 'Correspondencia':
+        return redirect('correspondencias')
+    
+    if request.user.usuario.userType == 'General':
+        return redirect('home')
+    
+    search_term = request.GET.get('search')
+    inventarios = Inventario.objects.filter(prestado=True).order_by('dateAdquired')
+
+    if search_term:
+        inventarios = inventarios.filter(
+            Q(codigo__icontains=search_term) | 
+            Q(marca__icontains=search_term) | 
+            Q(entregadoA__icontains=search_term)
+        )
+
+    page_size = int(request.GET.get('page_size', 10))
+    paginator = Paginator(inventarios, page_size)
+    page = request.GET.get('page')
+    
+    try: 
+        inventarios = paginator.page(page)
+    except PageNotAnInteger:
+        inventarios = paginator.page(1)
+    except EmptyPage:
+        inventarios = paginator.page(paginator.num_pages)
+
+    return render(request, 'inventario_pendiente.html', {
+        'inventarios': inventarios,
+        'search_term': search_term
+    })
+
+@login_required         
+def inventario_detail(request, inventario_id):
+
+    if request.user.usuario.userType == 'Correspondencia':
+        return redirect('correspondencias')
+    
+    if request.user.usuario.userType == 'General':
+        return redirect('home')
+    
+    inventario = get_object_or_404(Inventario, pk=inventario_id)
+    observaciones = Observacion.objects.filter(inventario=inventario)
+    if request.method == 'POST':
+        form = InventarioForm(request.POST, instance=inventario)
+        if form.is_valid():
+            inventario = form.save(commit=False)
+            if inventario.entregadoA or inventario.redProject:
+                inventario.prestado = True
+            else:
+                inventario.prestado = False
+            if inventario.dateGivenBack is not None:
+                observacion = Observacion.objects.create(
+                    inventario = inventario,
+                    observacion = None,
+                    entregadoA = inventario.entregadoA,
+                    redProject=inventario.redProject,
+                    dateTaken=inventario.dateTaken,
+                    dateGivenBack=inventario.dateGivenBack
+                )
+
+                inventario.entregadoA = None
+                inventario.redProject = None
+                inventario.dateTaken = None
+                inventario.dateGivenBack = None
+                inventario.prestado = False
+            inventario.save()
+            return redirect('inventarios')
+
+    else:
+        form = InventarioForm(instance=inventario)
+
+    return render(request, 'inventario_detail.html', {
+        'inventario': inventario,
+        'observaciones': observaciones,
+        'form': form
+    })
+
+@login_required
+def delete_inventario(request, inventario_id):
+
+    if request.user.usuario.userType == 'Correspondencia':
+        return redirect('correspondencias')
+    
+    if request.user.usuario.userType == 'General':
+        return redirect('home')
+    
+    inventario = get_object_or_404(Inventario, pk=inventario_id)
+        
+    if request.method == 'POST':
+        inventario.delete()
+        return redirect('inventarios')
+
+@login_required
+def generate__excel_report_inventarios(request):
+
+    if request.user.usuario.userType == 'Correspondencia':
+        return redirect('correspondencias')
+    
+    if request.user.usuario.userType == 'General':
+        return redirect('home')
+
+    inventarios = Inventario.objects.all()
+
+    wb = Workbook()
+    ws = wb.active
+
+    headers = ["Nombre", "Cantidad", "Codigo", "Numero Serial", "Marca", "Estado", "Fecha de Aquisición", "Valor", "Descripción", "Caracteristicas", "Entregado A", "Red o Proyecto", "Fecha Inicial de Prestamo", "Fecha de Devolución"]
+    ws.append(headers)
+
+    header = ws[1]
+    thin_border = Border(left=Side(style='thin'), 
+                        right=Side(style='thin'), 
+                        top=Side(style='thin'), 
+                        bottom=Side(style='thin'))
+    
+    for cell in header:
+        cell.font = Font(bold=True)
+        cell.fill = PatternFill(start_color="FFFF00", end_color="FFFF00", fill_type="solid")
+        cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+        cell.border = thin_border
+        ws.column_dimensions[cell.column_letter].width = max(len(cell.value), 15)
+
+    for inventario in inventarios:
+        row = [inventario.name, inventario.cantidad, inventario.codigo, inventario.serial_num, inventario.marca, inventario.estado, inventario.dateAdquired, inventario.valor, inventario.descripcion, inventario.caracteristicas, inventario.entregadoA, inventario.redProject, inventario.dateTaken, inventario.dateGivenBack]
+        ws.append(row)
+
+    for row in ws.iter_rows(min_row=2):
+        for cell in row:
+            cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+            cell.border = thin_border
+
+    currency_style = NamedStyle(name='currency', number_format='_("$"* #,##0.00_);_("$"* \(#,##0.00\);_("$"* "-"_);_(@_)')
+
+    currency_columns = ["Valor"]
+    for col_name in currency_columns:
+        col_index = headers.index(col_name) + 1  
+        col_letter = get_column_letter(col_index)
+        
+        for cell in ws[col_letter]:
+            cell.style = currency_style
+            cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+            cell.border = thin_border
+
+    for col_name in currency_columns:
+        col_index = headers.index(col_name) + 1
+        col_letter = get_column_letter(col_index)
+        header_cell = ws[f"{col_letter}1"]
+
+        header_cell.font = Font(bold=True)
+        header_cell.fill = PatternFill(start_color="FFFF00", end_color="FFFF00", fill_type="solid")
+        header_cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+        header_cell.border = thin_border
+        ws.column_dimensions[col_letter].width = max(len(header_cell.value), 15)
+
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=reporte_inventario.xlsx'
+
+    wb.save(response)
+
+    return response
+
+def view_observacion(request, observacion_id):
+
+    if request.user.usuario.userType == 'Correspondencia':
+        return redirect('correspondencias')
+    
+    if request.user.usuario.userType == 'General':
+        return redirect('home')  
+    
+    observacion = get_object_or_404(Observacion, pk=observacion_id)
+    form = ObservacionForm(instance=observacion)
+
+    if request.method == 'POST':
+        form = ObservacionForm(request.POST, instance=observacion)
+        if form.is_valid():
+            form.save()
+            return redirect('inventarios')
+
+    return render(request, 'observacion_detail.html', {
+        'observacion': observacion,
+        'form': form
+        })
+
+@login_required    
+def inspeccionesLocativas(request):
+    
+    return render(request, 'inspeccionesLocativas.html')
+
+@login_required
+def crear_sede(request):
+
+    if request.user.usuario.userType != 'Correspondencia' and request.user.usuario.userType != 'Admin':
+        return redirect('sedes')
+    
+    if request.method == 'POST':
+        form = SedeForm(request.POST)
+        if form.is_valid():
+            sede = form.save(commit=False) 
+            sede.save()
+            return redirect('sedes')
+    
+    else:
+        form = SedeForm()
+        
+    return render(request, 'crear_sede.html', {
+        'form': form
+    })
+
+@login_required
+def delete_sede(request, sede_id):
+
+    if request.user.usuario.userType != 'Correspondencia' and request.user.usuario.userType != 'Admin':
+        return redirect('sedes')
+    
+    sede = get_object_or_404(Sede, pk=sede_id)
+        
+    if request.method == 'POST':
+        sede.delete()
+        return redirect('sedes')
+
+@login_required
+def sedes(request):
+    
+    search_term = request.GET.get('search')
+    sedes = Sede.objects.all()
+
+    if search_term:
+        sedes = sedes.filter(
+            Q(nombre__icontains=search_term) | 
+            Q(departamento__icontains=search_term) | 
+            Q(municipio__icontains=search_term) | 
+            Q(contrato__document__icontains=search_term) |  
+            Q(contrato__nombre__icontains=search_term)
+        )
+
+    page_size = int(request.GET.get('page_size', 10))
+    paginator = Paginator(sedes, page_size)
+    page = request.GET.get('page')
+    
+    try: 
+        sedes = paginator.page(page)
+    except PageNotAnInteger:
+        sedes = paginator.page(1)
+    except EmptyPage:
+        sedes = paginator.page(paginator.num_pages)
+
+    return render(request, 'sedes.html', {
+        'sedes': sedes,
+        'search_term': search_term
+    })
+
+@login_required
+def sede_detail(request, sede_id):
+
+    sede = get_object_or_404(Sede, pk=sede_id)
+    fotos = Foto.objects.filter(sede=sede)
+
+    if request.method == 'POST':
+
+        form = SedeForm(request.POST, instance=sede)
+
+        if form.is_valid():
+            form.save()
+            return redirect('sedes')  
+
+    else:  
+        form = SedeForm(instance=sede)
+
+    return render(request, 'sede_detail.html', {
+        'sede': sede,
+        'fotos': fotos,
+        'form': form
+    })
+
+@login_required
+def generate_excel_report_sedes(request):
+
+    sedes = Sede.objects.all()
+
+    wb = Workbook()
+    ws = wb.active
+
+    headers = ["Nombre", "Departamento", "Municipio", "Dirección", "Latitud", "Longitud", "Grados ° Latitud*", "Minutos ° Latitud*", "Segundos ° Latitud*", "Grados ° Longitud*", "Minutos ° Longitud*", "Segundos ° Longitud*", "Descripción"]
+    ws.append(headers)
+
+    header = ws[1]
+    thin_border = Border(left=Side(style='thin'), 
+                        right=Side(style='thin'), 
+                        top=Side(style='thin'), 
+                        bottom=Side(style='thin'))
+    
+    for cell in header:
+        cell.font = Font(bold=True)
+        cell.fill = PatternFill(start_color="FFFF00", end_color="FFFF00", fill_type="solid")
+        cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+        cell.border = thin_border
+        ws.column_dimensions[cell.column_letter].width = max(len(cell.value), 15)
+
+    for sede in sedes:
+        row = [sede.nombre, sede.departamento, sede.municipio, sede.address, sede.latitud, sede.longitud, sede.lat1, sede.lat2, sede.lat3, sede.lon1, sede.lon2, sede.lon3, sede.descripcion]
+        ws.append(row)
+
+    for row in ws.iter_rows(min_row=2):
+        for cell in row:
+            cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+            cell.border = thin_border
+
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=reporte_sedes.xlsx'
+
+    wb.save(response)
+
+    return response
+
+@login_required
+def add_foto(request, sede_id):
+
+    if request.user.usuario.userType != 'Correspondencia' and request.user.usuario.userType != 'Admin':
+        return redirect('sedes')
+    
+    if request.method == 'POST':
+        form = FotoForm(request.POST, request.FILES)
+        if form.is_valid():
+            foto = form.save(commit=False)
+            foto.sede_id = sede_id
+
+            last_foto = Foto.objects.filter(sede_id=sede_id).order_by('-number').first()
+            if last_foto:
+                foto.number = str(int(last_foto.number) + 1)
+            else:
+                foto.number = '1'
+
+            foto.save()
+            return redirect('sede_detail', sede_id=sede_id)
+    else:
+        form = FotoForm()
+
+    return render(request, 'add_foto.html', {
+        'form': form
+        })
+
+@login_required    
+def visitas(request):
+    
+    return render(request, 'visitas.html')
+
+@login_required
+def crear_visita(request, sede_id):
+
+    if request.user.usuario.userType != 'Correspondencia' and request.user.usuario.userType != 'Admin':
+        return redirect('sedes')
+    
+    sede = get_object_or_404(Sede, pk=sede_id)
+
+    if request.method == 'POST':
+        form = VisitaForm(request.POST)
+        if form.is_valid():
+            form.instance.departamento = sede.departamento
+            form.instance.municipio = sede.municipio
+            form.instance.address = sede.address
+            form.instance.sede = sede
+
+            usuario_instance = Usuario.objects.get(user=request.user)
+            form.instance.usuario = usuario_instance
+
+            if 'NO' in form.cleaned_data.values():
+                form.instance.estado = 'Pendiente'
+            else:
+                form.instance.estado = 'Completada'
+
+            visita = form.save()
+            return redirect('sedes')
+        
+    else:
+        form = VisitaForm(initial={
+            'sede': sede
+        })
+
+    return render(request, 'crear_visita.html', {
+        'form': form
+    })
+
+@login_required
+def visita_detail(request, visita_id):
+
+    visita = get_object_or_404(Visita, pk=visita_id)
+    fotos = Foto.objects.filter(visita=visita)
+
+    if request.method == 'POST':
+
+        form = VisitaForm(request.POST, instance=visita)
+
+        if form.is_valid():
+            form.save()
+            return redirect('visitas')  
+
+    else:  
+        form = VisitaForm(instance=visita)
+
+    return render(request, 'visita_detail.html', {
+        'visita': visita,
+        'fotos': fotos,
+        'form': form
+    })
+
+@login_required
+def visitas_completadas(request):
+    
+    search_term = request.GET.get('search')
+    visitas = Visita.objects.filter(estado='Completada')
+
+    if search_term:
+        visitas = visitas.filter( 
+            Q(departamento__icontains=search_term) | 
+            Q(municipio__icontains=search_term) | 
+            Q(usuario__user__username__icontains=search_term) 
+        )
+
+    page_size = int(request.GET.get('page_size', 10))
+    paginator = Paginator(visitas, page_size)
+    page = request.GET.get('page')
+    
+    try: 
+        visitas = paginator.page(page)
+    except PageNotAnInteger:
+        visitas = paginator.page(1)
+    except EmptyPage:
+        visitas = paginator.page(paginator.num_pages)
+
+    return render(request, 'visitas_completadas.html', {
+        'visitas': visitas,
+        'search_term': search_term
+    })
+
+@login_required
+def visitas_pendientes(request):
+    
+    search_term = request.GET.get('search')
+    visitas = Visita.objects.filter(estado='Pendiente')
+
+    if search_term:
+        visitas = visitas.filter( 
+            Q(departamento__icontains=search_term) | 
+            Q(municipio__icontains=search_term) | 
+            Q(usuario__user__username__icontains=search_term) 
+        )
+
+    page_size = int(request.GET.get('page_size', 10))
+    paginator = Paginator(visitas, page_size)
+    page = request.GET.get('page')
+    
+    try: 
+        visitas = paginator.page(page)
+    except PageNotAnInteger:
+        visitas = paginator.page(1)
+    except EmptyPage:
+        visitas = paginator.page(paginator.num_pages)
+
+    return render(request, 'visitas_pendientes.html', {
+        'visitas': visitas,
+        'search_term': search_term
+    })
+
+@login_required
+def generate_excel_report_inspecciones(request):
+
+    visitas = Visita.objects.all()
+
+    wb = Workbook()
+    ws = wb.active
+
+    headers = ["Fecha de la Inspección", "Hora de la Inspección", "Departamento", "Municipio", "Dirección", "Usuario", "Sede", "Estado"]
+    ws.append(headers)
+
+    header = ws[1]
+    thin_border = Border(left=Side(style='thin'), 
+                        right=Side(style='thin'), 
+                        top=Side(style='thin'), 
+                        bottom=Side(style='thin'))
+    
+    for cell in header:
+        cell.font = Font(bold=True)
+        cell.fill = PatternFill(start_color="FFFF00", end_color="FFFF00", fill_type="solid")
+        cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+        cell.border = thin_border
+        ws.column_dimensions[cell.column_letter].width = max(len(cell.value), 15)
+
+    for visita in visitas:
+        row = [visita.date, visita.hora, visita.departamento, visita.municipio, visita.address, visita.usuario, visita.sede, visita.estado]
+        ws.append(row)
+
+    for row in ws.iter_rows(min_row=2):
+        for cell in row:
+            cell.alignment = Alignment(horizontal='center', vertical='center', wrap_text=True)
+            cell.border = thin_border
+
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename=reporte_inspecciones.xlsx'
+
+    wb.save(response)
+
+    return response
+
+@login_required
+def otra_foto(request, visita_id):
+
+    if request.user.usuario.userType != 'Correspondencia' and request.user.usuario.userType != 'Admin':
+        return redirect('sedes')
+    
+    if request.method == 'POST':
+        form = FotoForm(request.POST, request.FILES)
+        if form.is_valid():
+            foto = form.save(commit=False)
+            foto.visita_id = visita_id
+
+            last_foto = Foto.objects.filter(visita_id=visita_id).order_by('-number').first()
+            if last_foto:
+                foto.number = str(int(last_foto.number) + 1)
+            else:
+                foto.number = '1'
+
+            foto.save()
+            return redirect('visita_detail', visita_id=visita_id)
+    else:
+        form = FotoForm()
+
+    return render(request, 'add_foto.html', {
+        'form': form
+        })

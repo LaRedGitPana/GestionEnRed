@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="main container card card-body">
+    <h2 class="text-center">Talento Humano Asignado al Contrato # {{ task.document }}</h2>
+    <br>
+    <form method="GET" class="mb-3">
+        <div class="input-group">
+            <input type="text" class="form-control" name="search" placeholder="Buscar por documento o nombre completo del talento humano">
+            <button type="submit" class="btn btn-outline-primary">Buscar</button>
+        </div>
+    </form>
+    <div class="row">
+        {% for talentohumano in talentohumanos %}
+            <div class="col-md-4">
+                <div class="list-group">
+                    <a href="{% url 'talentohumano_detail' talentohumano.id %}" class="list-group-item list-group-item-action text-center">{{ talentohumano.nombreCompleto }}</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <br>
+    <div class="col text-center">
+        <a href="{% url 'task_detail' task.id %}" class="btn btn-outline-primary btn-custom-width">Aceptar</a>
+    </div>
+</div>
+
+<style>
+    .btn-custom-width {
+        width: 1050px; 
+    }
+</style>
+{% endblock %}

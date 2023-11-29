@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <main class="container">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <h2 class="text-center display-3 py-5" style="font-weight: bold;">Visitas</h2>
+
+                <div class="text-center">
+                    <a href="{% url 'visitas_completadas' %}" class="btn btn-primary btn-lg btn-custom-width mb-3">Visitas Completadas</a>
+                    <a href="{% url 'visitas_pendientes' %}" class="btn btn-primary btn-lg btn-custom-width">Visitas Pendientes</a>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <style>
+        .btn-custom-width {
+            width: 520px; 
+        }
+    </style>
+    
+{% endblock %}

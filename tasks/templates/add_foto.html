@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2 class="text-center">Ingrese su foto</h2>
+    <main class="container">
+        <div class="row">
+            <div class="col">
+                <form method="POST" enctype="multipart/form-data" class="card card-body">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit" class="btn btn-outline-primary">Guardar</button>
+                </form>
+            </div>
+        </div>
+    </main>
+{% endblock %}

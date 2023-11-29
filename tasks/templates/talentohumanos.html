@@ -68,12 +68,21 @@
                         </div>
                     {% endif %}
                 {% endif %}
-
+                
                 {% if user.usuario.userType == 'Admin' or user.usuario.userType == 'General' %}
+
+                    <form method="POST" action="{% url 'talentohumano_wizard' 1 %}">
+                        {% csrf_token %}
+                        <button class="btn btn-outline-dark btn-custom-width" type="submit">
+                            Crear Talento Humano
+                        </button>
+                    </form>
+
+                    <br>
 
                     <form method="POST" action="{% url 'generate_excel_report_talentohumanos' %}">
                         {% csrf_token %}
-                        <button class="btn btn-success btn-custom-width" type="submit">
+                        <button class="btn btn-outline-success btn-custom-width" type="submit">
                             Generar Reporte
                         </button>
                     </form>

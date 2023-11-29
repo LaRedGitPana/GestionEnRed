@@ -25,13 +25,13 @@
                         <div class="col-md-4">
                             <b>Nombre de Usuario:</b>
                             {{ user_form.username }}
-                            <b>Documento:</b>
+                            <b>Documento de Identidad:</b>
                             {{ usuario_form.document }}
                         </div>
                         <div class="col-md-4">
                             <b>Nombres:</b>
                             {{ user_form.first_name }}
-                            <b>Red a la que pertenece:</b>
+                            <b>Red o Proyecto al que pertenece:</b>
                             {{ usuario_form.red }}
                         </div>
                         <div class="col-md-4">
@@ -41,6 +41,14 @@
                             {{ usuario_form.userType }}
                         </div>
                     </div>
+                </div>
+
+                <br>
+
+                <div class="d-flex justify-content-center">
+                    <button class="btn btn-outline-dark btn-custom-width">
+                        Actualizar Usuario
+                    </button>
                 </div>
 
                 {% elif user.usuario.userType == 'Admin' %}
@@ -75,6 +83,14 @@
                             </div>
                         </div>
                     </div>
+
+                    <br>
+                    
+                    <div class="d-flex justify-content-center">
+                        <button class="btn btn-outline-dark btn-custom-width">
+                            Actualizar Usuario
+                        </button>
+                    </div>
                 {% else %}
 
                     <div class="row">
@@ -82,7 +98,7 @@
                             <b>Username:</b>
                             <p>{{usuario.user.username}}</p>
                             <b>Red:</b>
-                        <p>{{usuario.red}}</p>
+                            <p>{{usuario.red}}</p>
                         </div>
                         <div class="col-md-4">
                             <b>Nombre Completo:</b>
@@ -96,17 +112,6 @@
                         </div>
                     </div>
                     
-                {% endif %}
-
-                <br>
-
-                {% if user.usuario.userType == 'Admin' or user.usuario.id == usuario.id %}
-                    <div class="d-flex justify-content-center">
-                        <button class="btn btn-outline-dark btn-custom-width">
-                            Actualizar Usuario
-                        </button>
-                    </div>
-                {% else %}
                     <div class="d-flex justify-content-center">
                         <button class="btn btn-outline-dark btn-custom-width">
                             Aceptar
@@ -116,9 +121,11 @@
 
             </form>
             <div class="col">
-                <br>
 
                 {% if user.usuario.id == usuario.id %}
+
+                <br>
+                
                     <div class="d-flex justify-content-center">
                         <form action="{% url 'password_change' usuario.id %}">
                             {% csrf_token %}

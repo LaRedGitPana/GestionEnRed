@@ -1,5 +1,5 @@
 from django import forms
-from .models import Task, Usuario, TalentoHumano, RelacionTHC, Comentario, Archivo, Correspondencia
+from .models import Task, Usuario, TalentoHumano, RelacionTHC, Comentario, Archivo, Correspondencia, Inventario, Observacion, Sede, Foto, Visita
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 import datetime
@@ -172,7 +172,7 @@ class UsuarioForm(UserCreationForm):
     last_name = forms.CharField( label = 'Primer Apellido', max_length=100,  widget=forms.TextInput(attrs={'class': 'form-control','placeholder': 'Ingrese sus apellidos'}))    
     password1 = forms.CharField(label = 'Contraseña', max_length=40, widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese la contraseña'}))
     password2 = forms.CharField(label = 'Confirmar Contraseña', max_length=40, widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirme la contraseña'}))
-    document = forms.CharField(label = 'Documento', max_length=100, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese su documento'}))
+    document = forms.CharField(label = 'Documento de Identidad', max_length=100, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese su documento'}))
     red = forms.CharField(label = 'Red a la que pertenece', max_length=100, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese la red o proyecto'}))
     userType = forms.ChoiceField(label = 'Tipo de Usuario', choices=Usuario.USER_TYPES, widget=forms.Select(attrs={'class': 'form-control'}))
 
@@ -672,3 +672,285 @@ class CorrespondeciaForm(forms.ModelForm):
             'document': 'Archivo',
             'sentTo': 'Enviado a'
         }
+
+class InventarioForm(forms.ModelForm):
+    class Meta:
+        model = Inventario
+        fields = ['name', 'cantidad', 'descripcion', 'caracteristicas', 'codigo', 'serial_num', 'marca', 'estado', 'dateAdquired', 'valor', 'entregadoA', 'redProject', 'dateTaken', 'dateGivenBack']
+        widgets = {
+            'name': forms.TextInput(attrs={'class':'form-control', 'placeholder': 'Ingrese el nombre'}),
+            'cantidad': forms.TextInput(attrs={'class':'form-control', 'placeholder': 'Ingrese la cantidad'}),
+            'descripcion': forms.Textarea(attrs={'class':'form-control', 'placeholder': 'Ingrese la descripción', 'rows': 2, 'cols': 40}),
+            'caracteristicas': forms.Textarea(attrs={'class':'form-control', 'placeholder': 'Ingrese las caracteristicas', 'rows': 2, 'cols': 40}),
+            'codigo': forms.TextInput(attrs={'class':'form-control', 'placeholder': 'Ingrese el codigo'}),
+            'serial_num': forms.TextInput(attrs={'class':'form-control', 'placeholder': 'Ingrese el numero serial'}),
+            'marca': forms.TextInput(attrs={'class':'form-control', 'placeholder': 'Ingrese la marca'}),
+            'estado': forms.Select(choices=Inventario.ESTADOS_TYPES, attrs={'class': 'form-control'}),
+            'dateAdquired': forms.DateInput(attrs={'type': 'date'}),
+            'valor': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese el valor'}),
+            'entregadoA': forms.TextInput(attrs={'class':'form-control', 'placeholder': 'Ingrese a quien se le entrego'}),
+            'redProject': forms.TextInput(attrs={'class':'form-control', 'placeholder': 'Ingrese el area o el proyecto pertinente'}),
+            'dateTaken': forms.DateInput(attrs={'type': 'date'}),
+            'dateGivenBack': forms.DateInput(attrs={'type': 'date'})
+        }
+        labels = {
+            'name': 'Nombre',
+            'cantidad': 'Cantidad',
+            'descripcion': 'Descripción',
+            'caracteristicas': 'Caracteristicas',
+            'codigo': 'Codigo',
+            'serial_num': 'Numero Serial',
+            'marca': 'Marca',
+            'estado': 'Estado',
+            'dateAdquired': 'Fecha de Aquisición',
+            'valor': 'Valor',
+            'entregadoA': 'Entregado A',
+            'redProject': 'Red o Projecto',
+            'dateTaken': 'Fecha Inicial de Prestamo',
+            'dateGivenBack': 'Fecha de Devolución'
+        }
+
+    def clean(self):
+            cleaned_data = super().clean()
+            dateTaken = cleaned_data.get("dateTaken")
+            dateGivenBack = cleaned_data.get("dateGivenBack")
+
+            if dateTaken and dateGivenBack and dateTaken > dateGivenBack:
+                raise forms.ValidationError("La fecha inicial no puede ser mayor que la fecha de terminación")
+
+            return cleaned_data
+
+class ObservacionForm(forms.ModelForm):
+    class Meta:
+        model = Observacion
+        fields = ['observacion']
+        widgets = {
+            'observacion': forms.Textarea(attrs={'class':'form-control', 'placeholder': 'Ingrese su observación', 'rows': 2, 'cols': 40})
+        }
+        labels = {
+            'observacion': 'Observaciones'
+        }
+
+class SedeForm(forms.ModelForm):
+
+    contrato = forms.ModelChoiceField(
+        queryset=Task.objects.all(),
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        label='Contrato',
+    )
+
+    class Meta:
+        model = Sede
+        fields = ['nombre', 'departamento', 'municipio', 'address', 'latitud', 'longitud', 'lat1', 'lat2', 'lat3', 'lon1', 'lon2', 'lon3', 'descripcion', 'contrato']
+        widgets = {
+            'nombre': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese el nombre de la sede'}),
+            'departamento': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese el departamento donde se encuentra la sede'}),
+            'municipio': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese el municipio donde se encuentra la sede'}),
+            'address': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ingrese la dirección de la sede'}),
+            'latitud': forms.Select(choices=Sede.LATITUD, attrs={'class': 'form-control'}),
+            'longitud': forms.Select(choices=Sede.LONGITUD, attrs={'class': 'form-control'}),
+            'lat1': forms.TextInput(attrs={'class': 'form-control'}),
+            'lat2': forms.TextInput(attrs={'class': 'form-control'}),
+            'lat3': forms.TextInput(attrs={'class': 'form-control'}),
+            'lon1': forms.TextInput(attrs={'class': 'form-control'}),
+            'lon2': forms.TextInput(attrs={'class': 'form-control'}),
+            'lon3': forms.TextInput(attrs={'class': 'form-control'}),
+            'descripcion': forms.Textarea(attrs={'class':'form-control', 'placeholder': 'Ingrese la descripción de la sede', 'rows': 2, 'cols': 40}),
+        }
+        labels = {
+            'nombre': 'Nombre Sede',
+            'departamento': 'Departamento',
+            'municipio': 'Municipio',
+            'address': 'Dirección',
+            'latitud': 'Latitud',
+            'longitud': 'Longitud',
+            'lat1': 'Grados ° Latitud*',
+            'lat2': 'Minutos ° Latitud*',
+            'lat3': 'Segundos ° Latitud*',
+            'lon1': 'Grados ° Longitud*',
+            'lon2': 'Minutos ° Longitud*',
+            'lon3': 'Segundos ° Longitud*',
+            'descripcion': 'Descripción'
+        }
+
+class FotoForm(forms.ModelForm):
+    class Meta:
+        model = Foto
+        fields = ['file']
+        widgets = {
+        'file': forms.ClearableFileInput(attrs={'class': 'form-control'})
+        }
+        labels = {
+            'file': 'Imagen'
+        }
+
+class VisitaForm(forms.ModelForm):
+    class Meta:
+        model = Visita
+        fields = ['date', 'hora', 'campo_1_1', 'observacion_1_1', 'campo_1_2', 'observacion_1_2', 'campo_1_3', 'observacion_1_3', 'campo_1_4', 'observacion_1_4', 'campo_1_5', 'observacion_1_5', 'campo_1_6', 'observacion_1_6', 'campo_1_7', 'observacion_1_7', 'campo_2_1', 'observacion_2_1', 'campo_2_2', 'observacion_2_2', 'campo_2_3', 'observacion_2_3', 'campo_2_4', 'observacion_2_4', 'campo_2_5', 'observacion_2_5', 'campo_2_6', 'observacion_2_6', 'campo_2_7', 'observacion_2_7', 'campo_2_8', 'observacion_2_8', 'campo_2_9', 'observacion_2_9', 'campo_3_1', 'observacion_3_1', 'campo_3_2', 'observacion_3_2', 'campo_3_3', 'observacion_3_3', 'campo_3_4', 'observacion_3_4', 'campo_3_5', 'observacion_3_5', 'campo_3_6', 'observacion_3_6', 'campo_3_7', 'observacion_3_7', 'campo_3_8', 'observacion_3_8', 'campo_4_1', 'observacion_4_1', 'campo_4_2', 'observacion_4_2', 'campo_4_3', 'observacion_4_3', 'campo_4_4', 'observacion_4_4', 'campo_4_5', 'observacion_4_5', 'campo_4_6', 'observacion_4_6', 'campo_4_7', 'observacion_4_7', 'campo_4_8', 'observacion_4_8', 'campo_4_9', 'observacion_4_9', 'campo_4_10', 'observacion_4_10', 'campo_4_11', 'observacion_4_11', 'campo_5_1', 'observacion_5_1', 'campo_6_1', 'observacion_6_1', 'campo_6_2', 'observacion_6_2', 'campo_6_3', 'observacion_6_3', 'campo_6_4', 'observacion_6_4', 'campo_7_1', 'observacion_7_1', 'campo_7_2', 'observacion_7_2', 'campo_7_3', 'observacion_7_3', 'campo_7_4', 'observacion_7_4', 'campo_8_1', 'observacion_8_1', 'campo_8_2', 'observacion_8_2', 'campo_8_3', 'observacion_8_3', 'campo_8_4', 'observacion_8_4', 'campo_8_5', 'observacion_8_5', 'campo_9_1', 'observacion_9_1', 'campo_9_2', 'observacion_9_2', 'campo_10_1', 'observacion_10_1', 'campo_10_2', 'observacion_10_2', 'campo_10_3', 'observacion_10_3', 'campo_10_4', 'observacion_10_4', 'campo_10_5', 'observacion_10_5', 'campo_11_1', 'observacion_11_1', 'campo_11_2', 'observacion_11_2', 'campo_11_3', 'observacion_11_3', 'campo_11_4', 'observacion_11_4', 'campo_11_5', 'observacion_11_5', 'campo_11_6', 'observacion_11_6', 'campo_11_7', 'observacion_11_7', 'campo_11_8', 'observacion_11_8', 'campo_11_9', 'observacion_11_9', 'campo_11_10', 'observacion_11_10', 'observacionGeneral']
+        widgets = {
+            'date': forms.DateInput(attrs={'type': 'date'}),
+            'hora': forms.TimeInput(attrs={'type': 'time'}), 
+            'campo_1_1': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}), 'observacion_1_1': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_1_2': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}),  
+            'observacion_1_2': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_1_3': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}),  
+            'observacion_1_3': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_1_4': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}),  
+            'observacion_1_4': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_1_5': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}),  
+            'observacion_1_5': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_1_6': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}),  
+            'observacion_1_6': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_1_7': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}),  
+            'observacion_1_7': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_2_1': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}), 
+            'observacion_2_1': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_2_2': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}), 
+            'observacion_2_2': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_2_3': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}), 
+            'observacion_2_3': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_2_4': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}), 
+            'observacion_2_4': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_2_5': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}), 
+            'observacion_2_5': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_2_6': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}), 
+            'observacion_2_6': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_2_7': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}), 
+            'observacion_2_7': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_2_8': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}), 
+            'observacion_2_8': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_2_9': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}), 
+            'observacion_2_9': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_3_1': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}), 
+            'observacion_3_1': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_3_2': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}), 
+            'observacion_3_2': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_3_3': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}), 
+            'observacion_3_3': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_3_4': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}),
+            'observacion_3_4': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_3_5': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}),
+            'observacion_3_5': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_3_6': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}), 
+            'observacion_3_6': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_3_7': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}), 
+            'observacion_3_7': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_3_8': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}), 
+            'observacion_3_8': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_4_1': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}), 
+            'observacion_4_1': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_4_2': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}),
+            'observacion_4_2': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_4_3': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}), 
+            'observacion_4_3': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_4_4': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}),  
+            'observacion_4_4': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_4_5': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}),  
+            'observacion_4_5': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_4_6': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}),  
+            'observacion_4_6': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_4_7': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}), 
+            'observacion_4_7': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}),
+            'campo_4_8': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}), 
+            'observacion_4_8': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_4_9': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}),  
+            'observacion_4_9': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_4_10': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}),  
+            'observacion_4_10': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_4_11': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}), 
+            'observacion_4_11': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_5_1': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}),
+            'observacion_5_1': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_6_1': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}),  
+            'observacion_6_1': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}),
+            'campo_6_2': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}),  
+            'observacion_6_2': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_6_3': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}),  
+            'observacion_6_3': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_6_4': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}),  
+            'observacion_6_4': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_7_1': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}), 
+            'observacion_7_1': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_7_2': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}),  
+            'observacion_7_2': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_7_3': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}),  
+            'observacion_7_3': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_7_4': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}),  
+            'observacion_7_4': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_8_1': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}),  
+            'observacion_8_1': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_8_2': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}),  
+            'observacion_8_2': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_8_3': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}),  
+            'observacion_8_3': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_8_4': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}),  
+            'observacion_8_4': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_8_5': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}),  
+            'observacion_8_5': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_9_1': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}), 
+            'observacion_9_1': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_9_2': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}),  
+            'observacion_9_2': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_10_1': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}),  
+            'observacion_10_1': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_10_2': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}),  
+            'observacion_10_2': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_10_3': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}), 
+            'observacion_10_3': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_10_4': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}),  
+            'observacion_10_4': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_10_5': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}), 
+            'observacion_10_5': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_11_1': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}), 
+            'observacion_11_1': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_11_2': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}), 
+            'observacion_11_2': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_11_3': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}), 
+            'observacion_11_3': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_11_4': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}),
+            'observacion_11_4': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_11_5': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}), 
+            'observacion_11_5': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_11_6': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}),  
+            'observacion_11_6': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_11_7': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}),  
+            'observacion_11_7': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_11_8': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}), 
+            'observacion_11_8': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}),
+            'campo_11_9': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}), 
+            'observacion_11_9': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'campo_11_10': forms.Select(choices=Visita.OPCIONES, attrs={'class': 'form-control'}),  
+            'observacion_11_10': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Observación', 'rows': 2, 'cols': 40}), 
+            'observacionGeneral': forms.Textarea(attrs={'class':'form-control', 'placeholder':'Ingrese en caso de tener alguna observación general', 'rows': 5, 'cols': 40})
+        }
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        max_fields = {
+        1: 7,   
+        2: 9,  
+        3: 8,
+        4: 11,
+        5: 1,
+        6: 4, 
+        7: 4,
+        8: 5,
+        9: 2,
+        10: 5,
+        11: 10
+        }
+        
+        for section, max_field_count in max_fields.items():
+            for field in range(1, max_field_count + 1):
+                campo_key = f'campo_{section}_{field}'
+                observacion_key = f'observacion_{section}_{field}'
+
+                campo_value = cleaned_data.get(campo_key)
+                observacion_value = cleaned_data.get(observacion_key)
+
+                if campo_value == 'NO' and not observacion_value:
+                    raise forms.ValidationError(f"El campo observación {section}.{field} no puede quedar vacío si el campo {section}.{field} es igual a 'NO'.")
+
+        return cleaned_data

@@ -1,0 +1,265 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <main class="container card card-body">
+        <div class="row">
+            <div class="col">
+                
+                <form method="POST">
+
+                    <h2 style="text-align: center;">Sede {{ sede.nombre }}</h2>
+
+                    {% if form.errors %}
+                        <div style="color: red; font-size: 18px;" class="alert alert-danger" >
+                            {{ form.errors }}
+                        </div>
+                    {% endif %}
+    
+                    {% csrf_token %}
+
+                    {% if user.usuario.userType == 'Admin' or user.usuario.userType == 'Correspondencia' %}
+
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <b>Nombre:</b>
+                                    <p>{{form.nombre}}</p>
+                                    <b>Municipio:</b>
+                                    <p>{{form.municipio}}</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <b>Contrato:</b>
+                                    <p>{{form.contrato}}</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <b>Departamento:</b>
+                                    <p>{{form.departamento}}</p>
+                                    <b>Dirección:</b>
+                                    <p>{{form.address}}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <b>Latitud:</b>
+                                    <p>{{form.latitud}}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <b>Longitud:</b>
+                                    <p>{{form.longitud}}</p>
+                                </div>
+                                <div class="col-md-2">
+                                    <b>Grados ° Latitud*:</b>
+                                    <p>{{form.lat1}}</p>
+                                </div>
+                                <div class="col-md-2">
+                                    <b>Minutos ° Latitud*</b>
+                                    <p>{{form.lat2}}</p>
+                                </div>
+                                <div class="col-md-2">
+                                    <b>Segundos ° Latitud*:</b>
+                                    <p>{{form.lat3}}</p>
+                                </div>
+                                <div class="col-md-2">
+                                    <b>Grados ° Longitud*:</b>
+                                    <p>{{form.lon1}}</p>
+                                </div>
+                                <div class="col-md-2">
+                                    <b>Minutos ° Longitud*</b>
+                                    <p>{{form.lon2}}</p>
+                                </div>
+                                <div class="col-md-2">
+                                    <b>Segundos ° Longitud*:</b>
+                                    <p>{{form.lon3}}</p>
+                                </div>
+                                <div class="col-md-12">
+                                    <b>Descripción:</b>
+                                    <p>{{form.descripcion}}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    {% else %}
+                    
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <b>Nombre:</b>
+                                    <p>{{sede.nombre}}</p>
+                                    <b>Municipio:</b>
+                                    <p>{{sede.municipio}}</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <b>Contrato:</b>
+                                    <p>{{sede.contrato}}</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <b>Departamento:</b>
+                                    <p>{{sede.departamento}}</p>
+                                    <b>Dirección:</b>
+                                    <p>{{sede.address}}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <b>Latitud:</b>
+                                    <p>{{sede.latitud}}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <b>Longitud:</b>
+                                    <p>{{sede.longitud}}</p>
+                                </div>
+                                <div class="col-md-2">
+                                    <b>Grados ° Latitud*:</b>
+                                    <p>{{sede.lat1}}</p>
+                                </div>
+                                <div class="col-md-2">
+                                    <b>Minutos ° Latitud*</b>
+                                    <p>{{sede.lat2}}</p>
+                                </div>
+                                <div class="col-md-2">
+                                    <b>Segundos ° Latitud*:</b>
+                                    <p>{{sede.lat3}}</p>
+                                </div>
+                                <div class="col-md-2">
+                                    <b>Grados ° Longitud*:</b>
+                                    <p>{{sede.lon1}}</p>
+                                </div>
+                                <div class="col-md-2">
+                                    <b>Minutos ° Longitud*</b>
+                                    <p>{{sede.lon2}}</p>
+                                </div>
+                                <div class="col-md-2">
+                                    <b>Segundos ° Longitud*:</b>
+                                    <p>{{sede.lon3}}</p>
+                                </div>
+                                <div class="col-md-12">
+                                    <b>Descripción:</b>
+                                    <p>{{sede.descripcion}}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    {% endif %} 
+                    
+                    <div class="row text-center">
+                        <div class="col">
+                            {% if user.usuario.userType == 'Admin' or user.usuario.userType == 'Correspondencia' %}
+                            <button class="btn btn-outline-dark btn-block btn-custom-width">
+                                Actualizar Sede
+                            </button>
+                            {% else %}
+                            <button class="btn btn-outline-dark btn-block btn-custom-width">
+                                Aceptar
+                            </button>
+                            <br>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {% if user.usuario.userType == 'Admin' or user.usuario.userType == 'Correspondencia' %}
+                        
+                    <br>
+
+                        <div class="text-center">
+                            <a href="{% url 'crear_visita' sede.id %}" class="btn btn-outline-primary btn-custom-width">Diligenciar Formato Inspección</a>
+                        </div>
+
+                    {% endif %}
+                    
+
+                    {% if fotos %}
+
+                        <br>
+
+                        <h2 class="text-center" style="color: #BA0F15;">FOTOS</h2>
+                        <div class="square-images-container">
+                            {% for foto in fotos %}
+                                <div class="square-image">
+                                    <a href="{{ foto.file.url }}" data-lightbox="fotos" data-title="{{ foto.number }}">
+                                        <img src="{{ foto.file.url }}" alt="Foto">
+                                    </a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        
+                        {% if user.usuario.userType == 'Admin' or user.usuario.userType == 'Correspondencia' %}
+                            <br>
+
+                            <div class="text-center">
+                                <a href="{% url 'add_foto' sede_id=sede.id %}" class="btn btn-outline-success btn-custom-width">Agregar Otra Foto</a>
+                            </div>
+                        {% endif %}
+
+                    {% else %}
+
+                        {% if user.usuario.userType == 'Admin' or user.usuario.userType == 'Correspondencia' %}
+                            <br>
+
+                            <div class="text-center">
+                                <a href="{% url 'add_foto' sede_id=sede.id %}" class="btn btn-outline-success btn-custom-width">Agregar Foto</a>
+                            </div>
+                        {% endif %}
+                        
+                    {% endif %}
+
+                </form>
+
+                {% if user.usuario.userType == 'Admin' or user.usuario.userType == 'Correspondencia' %}
+                    <br>
+                    <div class="d-flex justify-content-center">
+                        <form id="delete-form" action="{% url 'delete_sede' sede.id %}" method="POST">
+                            {% csrf_token %}
+                            <button class="btn btn-outline-danger btn-custom-width" id="delete-btn">
+                                Eliminar Sede
+                            </button>
+                        </form>
+                    </div>
+                {% endif %}
+
+            </div>
+        </div>
+    </main>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    document.getElementById('delete-btn').addEventListener('click', function(event) {
+        event.preventDefault();
+        Swal.fire({
+            title: 'Mensaje de confirmación de eliminación',
+            text: '¿Está seguro de que desea eliminar esta sede ubicada en {{ sede.municipio }} - {{ sede.address }} de nombre {{ sede.nombre }}?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('delete-form').submit();
+            }
+        });
+    });
+</script>
+
+<style>
+    .btn-custom-width {
+        width: 1030px; 
+    }
+
+    .square-images-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px; 
+    }
+
+    .square-image {
+        width: 200px;
+        overflow: hidden;
+    }
+
+    .square-image img {
+        width: 100%;
+        height: auto;
+    }
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox.min.js"></script>
+    
+{% endblock %}

@@ -1,0 +1,1085 @@
+{% extends 'base.html' %}
+
+{% load custom_filters %}
+
+{% block content %}
+
+<div class="main container card card-body">
+    <div class="row">
+        <div class="col">
+            {% if visita.estado == 'Completada' %}
+                <h2 class="text" style="color: #3A833A; text-align: center;">{{ visita.municipio}} - {{ visita.sede }} - {{ visita.date }} - {{ visita.hora }}</h2>
+            {% else %}
+                <h2 class="text" style="color: #d9534f; text-align: center;">{{ visita.municipio}} - {{ visita.sede }} - {{ visita.date }} - {{ visita.hora }}</h2>
+            {% endif %}
+
+            {% if error %}
+                <div style="color: red; font-size: 18px; text-align: center;">
+                    {{ error }}
+                </div>
+            {% endif %}
+
+            <br>
+
+            <form method="POST">
+                {% csrf_token %}
+
+                {% if user.usuario.userType == 'Correspondencia' or user.usuario.userType == 'Admin' %}
+                    {% if visita.estado == 'Completada' %}
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <b>Fecha:</b>
+                                    <p>{{ form.date }}</p>
+                                    <b>Departamento:</b>
+                                    <p>{{ visita.departamento }}</p>
+                                    <b>Usuario:</b>
+                                    <p>{{ visita.usuario }}</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <b>Hora:</b>
+                                    <p>{{ form.hora }}</p>
+                                    <b>Municipio:</b>
+                                    <p>{{ visita.municipio }}</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <b>Estado:</b>
+                                    <p>{{ visita.estado }}</p>
+                                    <b>Dirección:</b>
+                                    <p>{{ visita.address }}</p>
+                                    <b>Sede:</b>
+                                    <p>{{ visita.sede }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <b>Fecha:</b>
+                                    <p>{{ form.date }}</p>
+                                    <b>Departamento:</b>
+                                    <p>{{ visita.departamento }}</p>
+                                    <b>Usuario:</b>
+                                    <p>{{ visita.usuario }}</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <b>Hora:</b>
+                                    <p>{{ form.hora }}</p>
+                                    <b>Municipio:</b>
+                                    <p>{{ visita.municipio }}</p>
+                                </div>
+                                <div class="col-md-4">
+                                    <b>Estado:</b>
+                                    <p>{{ visita.estado }}</p>
+                                    <b>Dirección:</b>
+                                    <p>{{ visita.address }}</p>
+                                    <b>Sede:</b>
+                                    <p>{{ visita.sede }}</p>
+                                </div>
+                            </div>
+
+                            {% if visita.campo_1_1 == 'NO' or visita.campo_1_2 == 'NO' or visita.campo_1_3 == 'NO' or visita.campo_1_4 == 'NO' or visita.campo_1_5 == 'NO' or visita.campo_1_6 == 'NO' or visita.campo_1_7 == 'NO' %}
+                            <h3 class="text-center" style="color: #BA0F15;">PELIGROS FÍSICOS</h3>
+                            {% endif %}
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Campos</th>
+                                        <th class="text-center">Observaciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% if visita.campo_1_1 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>1.1.</b> Existe buena iluminación artificial y natural.
+                                            {{visita.campo_1_1}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 1.1:</b>
+                                            {{visita.observacion_1_1}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_1_2 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>1.2.</b> Las iluminarias están en buen estado.
+                                            {{visita.campo_1_2}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 1.2:</b>
+                                            {{visita.observacion_1_2}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_1_3 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>1.3.</b> Las persianas, cortinas o protección de vidrios están en buen estado.
+                                            {{visita.campo_1_3}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 1.3:</b>
+                                            {{visita.observacion_1_3}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_1_4 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>1.4.</b> Hay buena ventilación en el área.
+                                            {{visita.campo_1_4}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 1.4:</b>
+                                            {{visita.observacion_1_4}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_1_5 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>1.5.</b> El nivel de ruido es adecuado (condiciones normales inferiores a 85 db).
+                                            {{visita.campo_1_5}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 1.5:</b>
+                                            {{visita.observacion_1_5}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_1_6 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>1.6.</b> Existen controles de ruido (control en la fuente, en el medio de propagación, en el trabajor).
+                                            {{visita.campo_1_6}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 1.6:</b>
+                                            {{visita.observacion_1_6}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_1_7 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>1.7.</b> La temperatura es confortable.
+                                            {{visita.campo_1_7}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 1.7:</b>
+                                            {{visita.observacion_1_7}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+
+                            {% if visita.campo_2_1 == 'NO' or visita.campo_2_2 == 'NO' or visita.campo_2_3 == 'NO' or visita.campo_2_4 == 'NO' or visita.campo_2_5 == 'NO' or visita.campo_2_6 == 'NO' or visita.campo_2_7 == 'NO' or visita.campo_2_8 == 'NO' or visita.campo_2_9 == 'NO' %}
+                            <h3 class="text-center" style="color: #BA0F15;">PELIGROS LOCATIVOS</h3>
+                            {% endif %}
+                            <table class="table">
+                                <tbody>
+                                    {% if visita.campo_2_1 == 'NO'%}                                    <tr>
+                                        <td>
+                                            <b>2.1.</b> Los muros están en buen estado (sin grietas, sin humedad, pintura buen estado).
+                                            {{visita.campo_2_1}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 2.1:</b>
+                                            {{visita.observacion_2_1}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_2_2 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>2.2.</b> Escaleras en buen estado (paso manos, antideslizantes).
+                                            {{visita.campo_2_2}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 2.2:</b>
+                                            {{visita.observacion_2_2}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_2_3 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>2.3.</b> Pisos en buen estado.
+                                            {{visita.campo_2_3}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 2.3:</b>
+                                            {{visita.observacion_2_3}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_2_4 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>2.4.</b> Ventanas, puertas en buen estado (manijas, chapas).
+                                            {{visita.campo_2_4}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 2.4:</b>
+                                            {{visita.observacion_2_4}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_2_5 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>2.5.</b> Techos en buen estado (sin goteras).
+                                            {{visita.campo_2_5}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 2.5:</b>
+                                            {{visita.observacion_2_5}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_2_6 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>2.6.</b> Áreas de circulación despejadas (escaleras, zonas de tránsito en almacén, etc.).
+                                            {{visita.campo_2_6}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 2.6:</b>
+                                            {{visita.observacion_2_6}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_2_7 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>2.7.</b> Están claramente demarcadas las áreas de trabajo y rutas de tránsito.
+                                            {{visita.campo_2_7}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 2.7:</b>
+                                            {{visita.observacion_2_7}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_2_8 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>2.8.</b> En general, ¿se observan las sillas en buen estado?
+                                            {{visita.campo_2_8}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 2.8:</b>
+                                            {{visita.observacion_2_8}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_2_9 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>2.9.</b> Las divisiones módulares, escritorios y cajones se encuentran en buenas condiciones.
+                                            {{visita.campo_2_9}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 2.9:</b>
+                                            {{visita.observacion_2_9}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+
+                            {% if visita.campo_3_1 == 'NO' or visita.campo_3_2 == 'NO' or visita.campo_3_3 == 'NO' or visita.campo_3_4 == 'NO' or visita.campo_3_5 == 'NO' or visita.campo_3_6 == 'NO' or visita.campo_3_7 == 'NO' or visita.campo_3_8 == 'NO' %}
+                            <h3 class="text-center" style="color: #BA0F15;">PELIGROS ELÉCTRICOS</h3>
+                            {% endif %}
+                            <table class="table">
+                                <tbody>
+                                    {% if visita.campo_3_1 == 'NO'%}                                    <tr>
+                                        <td>
+                                            <b>3.1.</b> Cables eléctricos debidamente entubados.
+                                            {{visita.campo_3_1}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 3.1:</b>
+                                            {{visita.observacion_3_1}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_3_2 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>3.2.</b> Los empalmes o conexiones están en buen estado.
+                                            {{visita.campo_3_2}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 3.2:</b>
+                                            {{visita.observacion_3_2}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_3_3 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>3.3.</b> Tomas e interruptores en buen estado.
+                                            {{visita.campo_3_3}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 3.3:</b>
+                                            {{visita.observacion_3_3}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_3_4 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>3.4.</b> Se observa cajas o toma corrientes sin sobrecarga.
+                                            {{visita.campo_3_4}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 3.4:</b>
+                                            {{visita.observacion_3_4}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_3_5 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>3.5.</b> Cables en buen estado.
+                                            {{visita.campo_3_5}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 3.5:</b>
+                                            {{visita.observacion_3_5}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_3_6 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>3.6.</b> Los tableros, cajas y circuitos están identificados.
+                                            {{visita.campo_3_6}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 3.6:</b>
+                                            {{visita.observacion_3_6}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_3_7 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>3.7.</b> Los tableros y cajas están libres de obstáculos.
+                                            {{visita.campo_3_7}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 3.7:</b>
+                                            {{visita.observacion_3_7}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_3_8 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>3.8.</b> Existe señalización de peligros.
+                                            {{visita.campo_3_8}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 3.8:</b>
+                                            {{visita.observacion_3_8}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+
+                            {% if visita.campo_4_1 == 'NO' or visita.campo_4_2 == 'NO' or visita.campo_4_3 == 'NO' or visita.campo_4_4 == 'NO' or visita.campo_4_5 == 'NO' or visita.campo_4_6 == 'NO' or visita.campo_4_7 == 'NO' or visita.campo_4_8 == 'NO' or visita.campo_4_9 == 'NO' or visita.campo_4_10 == 'NO' or visita.campo_4_11 == 'NO' %}
+                            <h3 class="text-center" style="color: #BA0F15;">PELIGROS DE SEGURIDAD</h3>
+                            {% endif %}
+                            <table class="table">
+                                <tbody>
+                                    {% if visita.campo_4_1 == 'NO'%}                                    <tr>
+                                        <td>
+                                            <b>4.1.</b> Los extintores son los adecuados al tipo de peligros del área.
+                                            {{visita.campo_4_1}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 4.1:</b>
+                                            {{visita.observacion_4_1}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_4_2 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>4.2.</b> Extintores de carga vigentes.
+                                            {{visita.campo_4_2}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 4.2:</b>
+                                            {{visita.observacion_4_2}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_4_3 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>4.3.</b> Extintores libres de obstáculos.
+                                            {{visita.campo_4_3}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 4.3:</b>
+                                            {{visita.observacion_4_3}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_4_4 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>4.4.</b> Existe señalización de extintores.
+                                            {{visita.campo_4_4}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 4.4:</b>
+                                            {{visita.observacion_4_4}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_4_5 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>4.5.</b> Existe señalización en todas las instalaciones y en las salidas de emergencia.
+                                            {{visita.campo_4_5}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 4.5:</b>
+                                            {{visita.observacion_4_5}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_4_6 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>4.6.</b> Las áreas de salida de emergencia y puntos de encuentro se encuentran despejadas.
+                                            {{visita.campo_4_6}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 4.6:</b>
+                                            {{visita.observacion_4_6}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_4_7 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>4.7.</b> El personal cuenta con los elementos de protección personal (EPP).
+                                            {{visita.campo_4_7}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 4.7:</b>
+                                            {{visita.observacion_4_7}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_4_8 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>4.8.</b> Hay camilla en el área (solo si es necesaria).
+                                            {{visita.campo_4_8}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 4.8:</b>
+                                            {{visita.observacion_4_8}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_4_9 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>4.9.</b> Hay botiquín disponible en el área.
+                                            {{visita.campo_4_9}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 4.9:</b>
+                                            {{visita.observacion_4_9}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_4_10 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>4.10.</b> ¿Se encuentra visible la lista de teléfonos de emergencias?
+                                            {{visita.campo_4_10}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 4.10:</b>
+                                            {{visita.observacion_4_10}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_4_11 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>4.11.</b> ¿Se cuenta con la lista de centros de salud u hospitales de referencia cercanos?
+                                            {{visita.campo_4_11}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 4.11:</b>
+                                            {{visita.observacion_4_11}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+
+                            {% if visita.campo_5_1 == 'NO' %}
+                            <h3 class="text-center" style="color: #BA0F15;">PELIGROS BIOLÓGICOS</h3>
+                            {% endif %}
+
+                            <table class="table">
+                                <tbody>
+                                    {% if visita.campo_5_1 == 'NO' %}                                   <tr>
+                                        <td>
+                                            <b>5.1.</b> El área está libre de insectos y roedores.
+                                            {{visita.campo_5_1}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 5.1:</b>
+                                            {{visita.observacion_5_1}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+
+                            {% if visita.campo_6_1 == 'NO' or visita.campo_6_2 == 'NO' or visita.campo_6_3 == 'NO' or visita.campo_6_4 == 'NO' %}
+                            <h3 class="text-center" style="color: #BA0F15;">PELIGROS BIOMECÁNICOS</h3>
+                            {% endif %}
+
+                            <table class="table">
+                                <tbody>
+                                    {% if visita.campo_6_1 == 'NO' %}                                   <tr>
+                                        <td>
+                                            <b>6.1.</b> Espacio de trabajo adecuado (para miembros inferiores, desplazamientos y salidas de puesto de trabajo).
+                                            {{visita.campo_6_1}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 6.1:</b>
+                                            {{visita.observacion_6_1}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_6_2 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>6.2.</b> Silla en buenas condiciones, espaldar, asiento, patas o base.
+                                            {{visita.campo_6_2}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 6.2:</b>
+                                            {{visita.observacion_6_2}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_6_3 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>6.3.</b> Altura adecuada de la pantalla del computador respecto a la horizontal (el borde superior de la pantalla se encuentra a la misma altura de los ojos del trabajador).
+                                            {{visita.campo_6_3}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 6.3:</b>
+                                            {{visita.observacion_6_3}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_6_4 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>6.4.</b> El peso de los objetos que levanta o almacena están dentro de los limites permisibles.
+                                            {{visita.campo_6_4}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 6.4:</b>
+                                            {{visita.observacion_6_4}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+
+                            {% if visita.campo_7_1 == 'NO' or visita.campo_7_2 == 'NO' or visita.campo_7_3 == 'NO' or visita.campo_7_4 == 'NO' %}
+                            <h3 class="text-center" style="color: #BA0F15;">ORDEN Y ASEO</h3>
+                            {% endif %}
+
+                            <table class="table">
+                                <tbody>
+                                    {% if visita.campo_7_1 == 'NO' %}                                  <tr>
+                                        <td>
+                                            <b>7.1.</b> El área se encuentra organizada.
+                                            {{visita.campo_7_1}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 7.1:</b>
+                                            {{visita.observacion_7_1}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_7_2 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>7.2.</b> Se realiza la clasificación de residuos sólidos en visitaa correcta.
+                                            {{visita.campo_7_2}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 7.2:</b>
+                                            {{visita.observacion_7_2}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_7_3 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>7.3.</b> Los residuos peligrosos se separan y disponen con empresas autorizadas.
+                                            {{visita.campo_7_3}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 7.3:</b>
+                                            {{visita.observacion_7_3}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_7_4 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>7.4.</b> El sitio inspeccionado se encuentra en buen estado de aseo y mantenimiento.
+                                            {{visita.campo_7_4}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 7.4:</b>
+                                            {{visita.observacion_7_4}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+
+                            {% if visita.campo_8_1 == 'NO' or visita.campo_8_2 == 'NO' or visita.campo_8_3 == 'NO' or visita.campo_8_4 == 'NO' or visita.campo_8_5 == 'NO' %}
+                            <h3 class="text-center" style="color: #BA0F15;">SANEAMIENTO BÁSICO</h3>
+                            {% endif %}
+
+                            <table class="table">
+                                <tbody>
+                                    {% if visita.campo_8_1 == 'NO' %}                                   <tr>
+                                        <td>
+                                            <b>8.1.</b> Servicios higiénicos en buen estado y limpieza.
+                                            {{visita.campo_8_1}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 8.1:</b>
+                                            {{visita.observacion_8_1}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_8_2 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>8.2.</b> Luminarias de baños en buen estado.
+                                            {{visita.campo_8_2}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 8.2:</b>
+                                            {{visita.observacion_8_2}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_8_3 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>8.3.</b> Hay papel higiénico, jabón, toallas y papeleras con pedal y tapa.
+                                            {{visita.campo_8_3}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 8.3:</b>
+                                            {{visita.observacion_8_3}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_8_4 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>8.4.</b> Están los inodoros limpios y en buen estado.
+                                            {{visita.campo_8_4}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 8.4:</b>
+                                            {{visita.observacion_8_4}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_8_5 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>8.5.</b> Se tienen reguladores o ahorradores de agua en los lavamanos y sanitarios.
+                                            {{visita.campo_8_5}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 8.5:</b>
+                                            {{visita.observacion_8_5}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+
+                            {% if visita.campo_9_1 == 'NO' or visita.campo_9_2 == 'NO' %}
+                            <h3 class="text-center" style="color: #BA0F15;">PELIGROS MECÁNICOS</h3>
+                            {% endif %}
+
+                            <table class="table">
+                                <tbody>
+                                    {% if visita.campo_9_1 == 'NO' %}                                   <tr>
+                                        <td>
+                                            <b>9.1.</b> Equipos y herramientas de oficina en buen estado.
+                                            {{visita.campo_9_1}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 9.1:</b>
+                                            {{visita.observacion_9_1}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_9_2 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>9.2.</b> Archivadores en buen estado.
+                                            {{visita.campo_9_2}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 9.2:</b>
+                                            {{visita.observacion_9_2}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+
+                            {% if visita.campo_10_1 == 'NO' or visita.campo_10_2 == 'NO' or visita.campo_10_3 == 'NO' or visita.campo_10_4 == 'NO' or visita.campo_10_5 == 'NO' %}
+                            <h3 class="text-center" style="color: #BA0F15;">PREGUNTAS Y OBSERVACIONES DE TAREAS</h3>
+                            {% endif %}
+
+                            <table class="table">
+                                <tbody>
+                                    {% if visita.campo_10_1 == 'NO' %}                                   <tr>
+                                        <td>
+                                            <b>10.1.</b> Los colaboradores cumplen con las normas de seguridad de su actividad.
+                                            {{visita.campo_10_1}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 10.1:</b>
+                                            {{visita.observacion_10_1}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_10_2 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>10.2.</b> Los colaboradores conocen los peligros a los que están expuestos.
+                                            {{visita.campo_10_2}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 10.2:</b>
+                                            {{visita.observacion_10_2}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_10_3 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>10.3.</b> El personal tiene claro que hacer en caso de un incidente, accidente de trabajo y enfermedad laboral.
+                                            {{visita.campo_10_3}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 10.3:</b>
+                                            {{visita.observacion_10_3}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_10_4 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>10.4.</b> Los colaboradores conocen la politica de seguridad y salud en el trabajo.
+                                            {{visita.campo_10_4}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 10.4:</b>
+                                            {{visita.observacion_10_4}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_10_5 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>10.5.</b> Los colaboradores saben como usar y cuidar sus EPP.
+                                            {{visita.campo_10_5}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 10.5:</b>
+                                            {{visita.observacion_10_5}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+
+                            {% if visita.campo_11_1 == 'NO' or visita.campo_11_2 == 'NO' or visita.campo_11_3 == 'NO' or visita.campo_11_4 == 'NO' or visita.campo_11_5 == 'NO' or visita.campo_11_6 == 'NO' or visita.campo_11_7 == 'NO' or visita.campo_11_8 == 'NO' or visita.campo_11_9 == 'NO' or visita.campo_11_10 == 'NO' %}
+                            <h3 class="text-center" style="color: #BA0F15;">MEDIO AMBIENTE</h3>
+                            {% endif %}
+
+                            <table class="table">
+                                <tbody>
+                                    {% if visita.campo_11_1 == 'NO' %}                                  <tr>
+                                        <td>
+                                            <b>11.1.</b> ¿Está en buenas condiciones el Horno microondas? (Si aplica).
+                                            {{visita.campo_11_1}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 11.1:</b>
+                                            {{visita.observacion_11_1}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_11_2 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>11.2.</b> ¿Está en buenas condiciones la nevera? (Si aplica).
+                                            {{visita.campo_11_2}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 11.2:</b>
+                                            {{visita.observacion_11_2}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_11_3 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>11.3.</b> ¿Está en buenas condiciones la cafetera? (Si aplica).
+                                            {{visita.campo_11_3}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 11.3:</b>
+                                            {{visita.observacion_11_3}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_11_4 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>11.4.</b> ¿Está en buenas condiciones el aire acondicionado? (Si aplica).
+                                            {{visita.campo_11_4}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 11.4:</b>
+                                            {{visita.observacion_11_4}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_11_5 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>11.5.</b> ¿Está en buenas condiciones la impresora/fotocopiadora? (Si aplica).
+                                            {{visita.campo_11_5}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 11.5:</b>
+                                            {{visita.observacion_11_5}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_11_6 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>11.6.</b> ¿Está en buenas condiciones el computador? (Si aplica).
+                                            {{visita.campo_11_6}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 11.6:</b>
+                                            {{visita.observacion_11_6}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_11_7 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>11.7.</b> Otro.
+                                            {{visita.campo_11_7}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 11.7:</b>
+                                            {{visita.observacion_11_7}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_11_8 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>11.8.</b> ¿Los productos quimicos están almacenados adecuadamente?
+                                            {{visita.campo_11_8}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 11.8:</b>
+                                            {{visita.observacion_11_8}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_11_9 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>11.9.</b> ¿En el área se tienen disponibles las hojas de seguridad?
+                                            {{visita.campo_11_9}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 11.9:</b>
+                                            {{visita.observacion_11_9}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                    {% if visita.campo_11_10 == 'NO' %}
+                                    <tr>
+                                        <td>
+                                            <b>11.10.</b> Otro.
+                                            {{visita.campo_11_10}}
+                                        </td>
+                                        <td>
+                                            <b>Observaciones 11.10:</b>
+                                            {{visita.observacion_11_10}}
+                                        </td>
+                                    </tr>
+                                    {% endif %}
+                                </tbody>
+                            </table>
+
+                            {% if visita.observacionGeneral%}
+                            <div class="col-md-12">
+                                <b>Observación General:</b>
+                                <p>{{visita.observacionGeneral}}</p>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                    {% endif %}
+
+                {% else %}
+
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <b>Fecha:</b>
+                                {{ visita.username }}
+                                <b>Departamento:</b>
+                                {{ visita.departamento }}
+                                <b>Usuario:</b>
+                                {{ visita.usuario }}
+                            </div>
+                            <div class="col-md-4">
+                                <b>Hora:</b>
+                                {{ visita.first_name }}
+                                <b>Municipio:</b>
+                                {{ visita.municipio }}
+                            </div>
+                            <div class="col-md-4">
+                                <b>Estado:</b>
+                                {{ visita.estado }}
+                                <b>Dirección:</b>
+                                {{ visita.address }}
+                                <b>Sede:</b>
+                                {{ visita.sede }}
+                            </div>
+                        </div>
+                    </div>
+
+                {% endif %}
+
+                <div class="row text-center">
+                    <div class="col">
+                        {% if user.usuario.userType == 'Admin' or user.usuario.userType == 'Correspondencia' %}
+                        <button class="btn btn-outline-dark btn-block btn-custom-width">
+                            Actualizar Visita
+                        </button>
+                        {% else %}
+                        <button class="btn btn-outline-dark btn-block btn-custom-width">
+                            Aceptar
+                        </button>
+                        <br>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% if fotos %}
+
+                    <br>
+
+                    <h2 class="text-center" style="color: #BA0F15;">FOTOS</h2>
+                    <div class="square-images-container">
+                        {% for foto in fotos %}
+                            <div class="square-image">
+                                <a href="{{ foto.file.url }}" data-lightbox="fotos" data-title="{{ foto.number }}">
+                                    <img src="{{ foto.file.url }}" alt="Foto">
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    
+                    {% if user.usuario.userType == 'Admin' or user.usuario.userType == 'Correspondencia' %}
+                        <br>
+
+                        <div class="text-center">
+                            <a href="{% url 'otra_foto' visita_id=visita.id %}" class="btn btn-outline-success btn-custom-width">Agregar Otra Foto</a>
+                        </div>
+                    {% endif %}
+
+                {% else %}
+
+                    {% if user.usuario.userType == 'Admin' or user.usuario.userType == 'Correspondencia' %}
+                        <br>
+
+                        <div class="text-center">
+                            <a href="{% url 'otra_foto' visita_id=visita.id %}" class="btn btn-outline-success btn-custom-width">Agregar Foto</a>
+                        </div>
+                    {% endif %}
+                    
+                {% endif %}
+
+            </form>
+            
+        </div>
+    </div>
+</div>
+
+<style>
+    .btn-custom-width {
+        width: 1030px; 
+    }
+
+    .square-images-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px; 
+}
+
+.square-image {
+    width: 200px;
+    overflow: hidden;
+}
+
+.square-image img {
+    width: 100%;
+    height: auto;
+}
+</style>
+
+{% endblock %}

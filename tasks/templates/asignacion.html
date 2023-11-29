@@ -4,18 +4,18 @@
 
     <main class="container">
         <div class="row">
-            <div class="col-md-4 offset-md-4 mt-5">
-                
+            <div class="col">
+
                 <form method="POST" class="card card-body">
 
                     <h2 style="text-align: center;">Pestaña de Asignación</h2>
 
-                    {{error}}
+                    <p style="color: red; font-size: 18px;">{{error}}</p>
     
                     {% csrf_token %}
                     {{ form.as_p }}
                     
-                    <button class="btn btn-primary">
+                    <button class="btn btn-outline-primary">
                         Asignar
                     </button>
                 </form>

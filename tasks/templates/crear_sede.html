@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <main class="container">
+        <div class="row">
+            <div class="col">
+                
+                <form method="POST" class="card card-body">
+
+                    <h2 style="text-align: center;">Crear Sede</h2>
+
+                    {% if form.errors %}
+                        <div class="alert alert-danger">
+                            {{ form.errors }}
+                        </div>
+                    {% endif %}
+    
+                    {% csrf_token %}
+
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <b>Nombre:</b>
+                                <p>{{form.nombre}}</p>
+                                <b>Municipio:</b>
+                                <p>{{form.municipio}}</p>
+                            </div>
+                            <div class="col-md-4">
+                                <b>Contrato:</b>
+                                <p>{{form.contrato}}</p>
+                            </div>
+                            <div class="col-md-4">
+                                <b>Departamento:</b>
+                                <p>{{form.departamento}}</p>
+                                <b>Dirección:</b>
+                                <p>{{form.address}}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <b>Latitud:</b>
+                                <p>{{form.latitud}}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <b>Longitud:</b>
+                                <p>{{form.longitud}}</p>
+                            </div>
+                            <div class="col-md-2">
+                                <b>Grados ° Latitud*:</b>
+                                <p>{{form.lat1}}</p>
+                            </div>
+                            <div class="col-md-2">
+                                <b>Minutos ° Latitud*</b>
+                                <p>{{form.lat2}}</p>
+                            </div>
+                            <div class="col-md-2">
+                                <b>Segundos ° Latitud*:</b>
+                                <p>{{form.lat3}}</p>
+                            </div>
+                            <div class="col-md-2">
+                                <b>Grados ° Longitud*:</b>
+                                <p>{{form.lon1}}</p>
+                            </div>
+                            <div class="col-md-2">
+                                <b>Minutos ° Longitud*</b>
+                                <p>{{form.lon2}}</p>
+                            </div>
+                            <div class="col-md-2">
+                                <b>Segundos ° Longitud*:</b>
+                                <p>{{form.lon3}}</p>
+                            </div>
+                            <div class="col-md-12">
+                                <b>Descripción:</b>
+                                <p>{{form.descripcion}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-outline-primary">
+                        Guardar
+                    </button>
+                </form>
+
+            </div>
+        </div>
+    </main>
+    
+{% endblock %}

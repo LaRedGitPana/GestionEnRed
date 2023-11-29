@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <main class="container">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <h2 class="text-center display-3 py-5" style="font-weight: bold;">Sedes</h2>
+
+                <form method="GET" class="mb-3">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="search" placeholder="Buscar por departamento, municipio o nombre de sede">
+                        <button type="submit" class="btn btn-outline-primary">Buscar</button>
+                    </div>
+                </form>
+
+                <div class="row">
+                    {% for sede in sedes %}
+                        <div class="col-md-6">
+                            <a class="card mb-3" href="{% url 'sede_detail' sede.id %}">
+                                <div class="card-body">
+                                    <h5 class="card-title text-dark text-center ">{{ sede.nombre }} - {{ sede.municipio }}</h5>
+                                </div>
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <br>
+
+                {% if sedes.has_other_pages %}
+                    <ul class="pagination justify-content-center">
+                        {% if sedes.has_previous %}
+                            <li class="page-item"><a class="page-link" href="?page=1{% if search_term %}&search={{ search_term }}{% endif %}">Primera</a></li>
+                            <li class="page-item"><a class="page-link" href="?page={{ sedes.previous_page_number }}{% if search_term %}&search={{ search_term }}{% endif %}">Anterior</a></li>
+                        {% endif %}
+                        {% for i in sedes.paginator.page_range %}
+                            {% if sedes.number == i %}
+                                <li class="page-item active"><a class="page-link" href="#">{{ i }} <span class="sr-only"></span></a></li>
+                            {% else %}
+                                <li class="page-item"><a class="page-link" href="?page={{ i }}{% if search_term %}&search={{ search_term }}{% endif %}">{{ i }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                        {% if sedes.has_next %}
+                            <li class="page-item"><a class="page-link" href="?page={{ sedes.next_page_number }}{% if search_term %}&search={{ search_term }}{% endif %}">Siguiente</a></li>
+                            <li class="page-item"><a class="page-link" href="?page={{ sedes.paginator.num_pages }}{% if search_term %}&search={{ search_term }}{% endif %}">Ultima</a></li>
+                        {% endif %}
+                    </ul>
+                {% endif %}
+
+                {% if sedes.paginator.num_pages > 1 %}
+                    {% if sedes.paginator.count >= 20 %}
+                        <p class="text-center">Seleccione cuántas correspondencias desea ver por página:</p>
+                        <div class="d-flex justify-content-center mb-3">
+                            <form method="get" action="{% url 'sedes' %}">
+                                <button type="submit" name="page_size" value="10" class="btn btn-primary me-2 {% if sedes.paginator.per_page == 10 %}active{% endif %}">10</button>
+                            </form>
+                            <form method="get" action="{% url 'sedes' %}">
+                                <button type="submit" name="page_size" value="20" class="btn btn-primary me-2 {% if sedes.paginator.per_page == 20 %}active{% endif %}">20</button>
+                            </form>
+                        </div>
+                    {% endif %}
+                    {% if sedes.paginator.count >= 50 %}
+                        <div class="d-flex justify-content-center mb-3">
+                            <form method="get" action="{% url 'sedes' %}">
+                                <button type="submit" name="page_size" value="50" class="btn btn-primary {% if sedes.paginator.per_page == 50 %}active{% endif %}">50</button>
+                            </form>
+                        </div>
+                    {% endif %}
+                {% endif %}
+
+                {% if user.usuario.userType == 'Admin' or user.usuario.userType == 'Correspondencia' %}
+                    <form method="get" action="{% url 'crear_sede' %}">
+                        {% csrf_token %}
+                        <button class="btn btn-outline-dark btn-custom-width">
+                            Crear Sede
+                        </button>
+                    </form>
+                {% endif %}
+
+                <br>
+
+                {% if user.usuario.userType == 'Admin' or user.usuario.userType == 'Correspondencia' %}
+
+                    <form method="POST" action="{% url 'generate_excel_report_sedes' %}">
+                        {% csrf_token %}
+                        <button class="btn btn-outline-success btn-custom-width" type="submit">
+                            Generar Reporte
+                        </button>
+                    </form>
+
+                {% endif %}
+
+            </div>
+        </div>
+    </main>
+
+    <style>
+        .btn-custom-width {
+            width: 520px; 
+        }
+    </style>
+    
+{% endblock %}
